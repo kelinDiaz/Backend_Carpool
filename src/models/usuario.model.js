@@ -1,0 +1,36 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+
+const Usuario = sequelize.define('Usuario', {
+  id: { type: DataTypes.INTEGER, 
+    autoIncrement: true,
+     primaryKey: true },
+
+
+  nombre: { type: DataTypes.STRING(100), 
+    allowNull: false },
+
+  apellido: { type: DataTypes.STRING(100), 
+    allowNull: false },
+  dni: { type: DataTypes.STRING(20),
+     allowNull: false, unique: true },
+
+  correo: { type: DataTypes.STRING(100), 
+    allowNull: false, unique: true },
+
+  contrasena: { type: DataTypes.STRING(255),
+     allowNull: false },
+
+  fotoPerfil: { type: DataTypes.STRING(255),
+     allowNull: true },
+
+  fotoCarnet: { type: DataTypes.STRING(255), 
+    allowNull: true },
+    
+  role_id: { type: DataTypes.INTEGER, allowNull: false }
+}, {
+  tableName: 'usuarios',
+  timestamps: false
+});
+
+module.exports = Usuario;
