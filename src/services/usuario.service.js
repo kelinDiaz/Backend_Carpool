@@ -20,9 +20,26 @@ const buscarUsuarioPorCorreo = async (correo) => {
   return await Usuario.findOne({ where: { correo } });
 };
 
+const login = async (correo, contrasena) => {
+  try {
+    const result = await Usuario.findOne({
+      where: {
+        correo,
+        contrasena
+      }
+    });
+
+    return result; // será `null` si no encuentra nada
+  } catch (error) {
+    console.error('Error en login:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   crearUsuario,
-  buscarUsuarioPorCorreo
+  buscarUsuarioPorCorreo,
+  login
 };
 
 

@@ -46,6 +46,36 @@ const registrarUsuario = async (req, res) => {
   }
 };
 
+
+const inicioSesion = async (req, res) => {
+   try{
+    const{
+        correo,
+        contrasena
+
+    } = req.body;
+
+    if(!correo || !contrasena){
+        return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
+    }
+
+    const resultado = await usuarioService.login(correo,contrasena);
+
+    if(!resultado){
+      res.status(500).json({ mensaje: 'Datos incorrectos.' });
+    }
+      res.status(201).json({ mensaje: 'Inicio correcto.' });
+
+   } catch(error){
+       console.error(error);
+    res.status(500).json({ mensaje: 'Error al iniciar sesion.' });
+   }
+   
+};
+
+      
+
+
 module.exports = {
-  registrarUsuario
+  registrarUsuario, inicioSesion
 };
