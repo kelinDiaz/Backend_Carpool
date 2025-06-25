@@ -18,9 +18,23 @@ const { Rol, Usuario, Vehiculo } = require('./models');
     console.log('✅ Conectado a la base de datos');
 
     // 🔽 Orden correcto: Rol → Usuario → Vehiculo
-    await Rol.sync({ alter: true });
-    await Usuario.sync({ alter: true });
-    await Vehiculo.sync({ alter: true });
+    //await Rol.sync({ alter: true });
+    //await Usuario.sync({ alter: true });
+    //await Vehiculo.sync({ alter: true });
+
+    
+//cambio temporal
+
+
+   await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+
+// 2. Sincronizar en orden inverso a las dependencias
+await Vehiculo.sync({ force: true }); // Depende de Usuario
+await Usuario.sync({ force: true });  // Depende de Rol
+await Rol.sync({ force: true });      // Tabla base
+
+// 3. Reactivar verificaciones
+await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
 
     console.log('✅ Base de datos sincronizada');
   } catch (error) {

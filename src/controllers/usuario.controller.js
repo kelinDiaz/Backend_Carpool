@@ -62,9 +62,10 @@ const inicioSesion = async (req, res) => {
     const resultado = await usuarioService.login(correo,contrasena);
 
     if(!resultado){
-      res.status(500).json({ mensaje: 'Datos incorrectos.' });
+     return res.status(500).json({ mensaje: 'Datos incorrectos.' });
     }
-      res.status(201).json({ mensaje: 'Inicio correcto.' });
+     return res.status(201).json({ mensaje: 'Inicio Sesion.' });
+      
 
    } catch(error){
        console.error(error);
