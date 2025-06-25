@@ -29,9 +29,9 @@ const { Rol, Usuario, Vehiculo } = require('./models');
    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
 
 // 2. Sincronizar en orden inverso a las dependencias
-await Vehiculo.sync({ force: true }); // Depende de Usuario
-await Usuario.sync({ force: true });  // Depende de Rol
-await Rol.sync({ force: true });      // Tabla base
+await Vehiculo.sync({ alter: true }); // Depende de Usuario
+await Usuario.sync({ alter: true });  // Depende de Rol
+await Rol.sync({ alter: true });      // Tabla base
 
 // 3. Reactivar verificaciones
 await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');

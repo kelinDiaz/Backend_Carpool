@@ -1,4 +1,4 @@
-
+const bcryptjs = require('bcryptjs');
 
 const usuarioService = require('../services/usuario.service');
 
@@ -24,17 +24,25 @@ const registrarUsuario = async (req, res) => {
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: 'El correo ya está registrado.' });
     }
+      
+    
+
+    const salt = await bcryptjs.genSalt(5);
+    const contrasenaEncriptada = await bcryptjs.hash(contrasena, salt);
+
+
 
     const datosUsuario = {
       nombre,
       apellido,
       dni,
       correo,
-      contrasena,
+      contrasena: contrasenaEncriptada,
       role_id,
       fotoPerfil,
       fotoCarnet
     };
+    
 
     await usuarioService.crearUsuario(datosUsuario, vehiculo);
 
@@ -59,12 +67,24 @@ const inicioSesion = async (req, res) => {
         return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
     }
 
+    const usuarioExistente = await usuarioService.buscarUsuarioPorCorreo(correo);
+    if(!usuarioExistente){
+      return res.status(400).json({ mensaje: 'Datos Incorrectos.' });
+    }
     const resultado = await usuarioService.login(correo,contrasena);
 
     if(!resultado){
      return res.status(500).json({ mensaje: 'Datos incorrectos.' });
     }
-     return res.status(201).json({ mensaje: 'Inicio Sesion.' });
+     return res.status(201).json({ mensaje: 'Inicio Sesion.',
+      usuario: {
+        id: resultado.id,
+        nombre: resultado.nombre,
+        apellido: resultado.apellido,
+        dni: resultado.dni,
+        fotoPerfil: resultado.fotoPerfil,
+        fotoCarnet: resultado.fotoCarnet
+      } });
       
 
    } catch(error){
