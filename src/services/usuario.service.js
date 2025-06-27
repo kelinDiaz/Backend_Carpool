@@ -6,14 +6,21 @@ const Vehiculo = require('../models/vehiculo.model');
 const crearUsuario = async (datosUsuario, datosVehiculo) => {
   const nuevoUsuario = await Usuario.create(datosUsuario);
 
-  if (datosUsuario.role_id === 2 && datosVehiculo) {
+  if (datosVehiculo) {
+    console.log("prueba de que entro a vehiculo");
     await Vehiculo.create({
       usuario_id: nuevoUsuario.id,
       ...datosVehiculo
+      
+      
     });
   }
 
   return nuevoUsuario;
+};
+
+const buscarDNI= async (dni) => {
+  return await Usuario.findOne({ where: { dni } });
 };
 
 const buscarUsuarioPorCorreo = async (correo) => {
@@ -39,7 +46,8 @@ const login = async (correo, contrasena) => {
 module.exports = {
   crearUsuario,
   buscarUsuarioPorCorreo,
-  login
+  login,
+  buscarDNI
 };
 
 

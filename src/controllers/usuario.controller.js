@@ -20,11 +20,28 @@ const registrarUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
     }
 
+        const dniExistente = await usuarioService.buscarDNI(dni);
+    if (dniExistente) {
+      return res.status(400).json({ mensaje: 'El DNI ya está registrado.' });
+    }
+
+        if (role_id == 2 && !vehiculo){
+          return res.status(400).json({ mensaje: 'Los conductores deben registrar un vehículo.' });
+
+        }
+      
+
+
+    
+
+
     const usuarioExistente = await usuarioService.buscarUsuarioPorCorreo(correo);
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: 'El correo ya está registrado.' });
     }
 
+     
+    
     const datosUsuario = {
       nombre,
       apellido,
