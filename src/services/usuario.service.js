@@ -7,7 +7,7 @@ const crearUsuario = async (datosUsuario, datosVehiculo) => {
   const nuevoUsuario = await Usuario.create(datosUsuario);
 
   if (datosVehiculo) {
-    console.log("prueba de que entro a vehiculo");
+    
     await Vehiculo.create({
       usuario_id: nuevoUsuario.id,
       ...datosVehiculo
@@ -22,6 +22,13 @@ const crearUsuario = async (datosUsuario, datosVehiculo) => {
 const buscarDNI= async (dni) => {
   return await Usuario.findOne({ where: { dni } });
 };
+
+
+const buscarPlaca = async (placa) =>{
+  return await Vehiculo.findOne({ where: {placa}});
+
+}
+
 
 const buscarUsuarioPorCorreo = async (correo) => {
   return await Usuario.findOne({ where: { correo }, 
@@ -60,7 +67,8 @@ module.exports = {
   crearUsuario,
   buscarUsuarioPorCorreo,
   login,
-  buscarDNI
+  buscarDNI,
+  buscarPlaca
 };
 
 

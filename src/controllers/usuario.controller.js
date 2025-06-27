@@ -20,16 +20,23 @@ const registrarUsuario = async (req, res) => {
       return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
     }
 
-        const dniExistente = await usuarioService.buscarDNI(dni);
+    const dniExistente = await usuarioService.buscarDNI(dni);
     if (dniExistente) {
       return res.status(400).json({ mensaje: 'El DNI ya está registrado.' });
     }
 
-        if (role_id == 2 && !vehiculo){
+    if (role_id == 2 && !vehiculo){
           return res.status(400).json({ mensaje: 'Los conductores deben registrar un vehículo.' });
 
         }
-      
+         
+    if(role_id == 2){
+          const placaExistente = await usuarioService.buscarPlaca(vehiculo.placa);
+              if (placaExistente) {
+                  return res.status(400).json({ mensaje: 'La placa ya esta registrada.' });
+                   }
+
+        }
 
 
     
@@ -45,10 +52,6 @@ const registrarUsuario = async (req, res) => {
     const salt = await bcryptjs.genSalt(5);
     const contrasenaEncriptada = await bcryptjs.hash(contrasena, salt);
 
-
-
-     
-    
     const datosUsuario = {
       nombre,
       apellido,
