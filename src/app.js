@@ -17,10 +17,16 @@ const { Rol, Usuario, Vehiculo } = require('./models');
     await sequelize.authenticate();
     console.log('✅ Conectado a la base de datos');
 
-    // 🔽 Orden correcto: Rol → Usuario → Vehiculo
+    
     await Rol.sync({ alter: true });
     await Usuario.sync({ alter: true });
     await Vehiculo.sync({ alter: true });
+
+    
+
+
+
+   
 
     console.log('✅ Base de datos sincronizada');
   } catch (error) {
