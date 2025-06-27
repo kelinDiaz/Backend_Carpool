@@ -13,7 +13,7 @@ Vehiculo.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 Usuario.hasOne(Vehiculo, { foreignKey: 'usuario_id' });
 
 module.exports = {
-  sequelize,  // <---- agrega esta línea
+  sequelize, 
   Rol,
   Usuario,
   Vehiculo

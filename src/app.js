@@ -15,7 +15,7 @@ const { Rol, Usuario, Vehiculo } = require('./models');
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Conectado a la base de datos');
+    console.log('Conectado a la base de datos');
 
     
     await Rol.sync({ alter: true });
@@ -28,9 +28,9 @@ const { Rol, Usuario, Vehiculo } = require('./models');
 
    
 
-    console.log('✅ Base de datos sincronizada');
+    console.log(' Base de datos sincronizada');
   } catch (error) {
-    console.error('❌ Error al conectar o sincronizar la base de datos:', error);
+    console.error(' Error al conectar o sincronizar la base de datos:', error);
   }
 })();
 
