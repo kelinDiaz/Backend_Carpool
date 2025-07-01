@@ -35,3 +35,5 @@ coverage/
 # Otros archivos
 npm-debug.log
 yarn-error.log
+
+/uploads/

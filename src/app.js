@@ -1,37 +1,21 @@
+
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const sequelize = require('./config/database');
 
-// Middleware para JSON
+const usuarioRoutes = require('./routes/usuario.routes');
+
+
+app.use(cors());
 app.use(express.json());
-
-// Rutas
-const rutasUsuarios = require('./routes/usuario.routes');
-app.use('/api', rutasUsuarios);
-
-// Importar modelos y relaciones
-const { Rol, Usuario, Vehiculo } = require('./models');
-
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Conectado a la base de datos');
-
-    
-    await Rol.sync({ alter: true });
-    await Usuario.sync({ alter: true });
-    await Vehiculo.sync({ alter: true });
-
-    
+app.use(express.urlencoded({ extended: true }));
 
 
+app.use('/api/usuarios', usuarioRoutes);
 
-   
-
-    console.log(' Base de datos sincronizada');
-  } catch (error) {
-    console.error(' Error al conectar o sincronizar la base de datos:', error);
-  }
-})();
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Algo salió mal' });
+});
 
 module.exports = app;

@@ -1,60 +1,93 @@
-
-
 const bcryptjs = require('bcryptjs');
+const sequelize = require('../config/database');
 const Usuario = require('../models/usuario.model');
 const Vehiculo = require('../models/vehiculo.model');
 
 const crearUsuario = async (datosUsuario, datosVehiculo) => {
+  const transaction = await sequelize.transaction();
+  
   try {
-    const nuevoUsuario = await Usuario.create(datosUsuario);
-    console.log(' Usuario creado:', nuevoUsuario);
+    const salt = await bcryptjs.genSalt(10);
+    datosUsuario.contrasena = await bcryptjs.hash(datosUsuario.contrasena, salt);
+    
+    
+    const nuevoUsuario = await Usuario.create(datosUsuario, { transaction });
 
-    if (datosVehiculo) {
+    
+    if (datosUsuario.role_id === 2 && datosVehiculo) {
       await Vehiculo.create({
         usuario_id: nuevoUsuario.id,
-        ...datosVehiculo
-      });
-      console.log('Vehículo creado:', datosVehiculo);
+        marca: datosVehiculo.marca,
+        modelo: datosVehiculo.modelo,
+        color: datosVehiculo.color,
+        placa: datosVehiculo.placa,
+        licencia: datosVehiculo.licencia_path,
+        foto_vehiculo: datosVehiculo.foto_vehiculo
+      }, { transaction });
     }
 
-    return nuevoUsuario;
+    
+    await transaction.commit();
+    
+    return {
+      id: nuevoUsuario.id,
+      nombre: nuevoUsuario.nombre,
+      correo: nuevoUsuario.correo,
+      role_id: nuevoUsuario.role_id
+    };
 
   } catch (error) {
-    console.error(' Error en crearUsuario:', error);
-    throw error;
+    
+    if (transaction) await transaction.rollback();
+    console.error('Error en crearUsuario:', error);
+    
+    
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      throw new Error('Datos duplicados: ' + error.errors.map(e => e.path).join(', '));
+    }
+    
+    throw new Error('Error al registrar usuario: ' + error.message);
   }
 };
 
-const buscarDNI = async (dni) => {
+const verificarExistencia = async (modelo, campo, valor) => {
   try {
-    const usuario = await Usuario.findOne({ where: { dni } });
-    console.log('🔍 Resultado buscarDNI:', usuario);
-    return usuario;
+    const resultado = await modelo.findOne({ 
+      where: { [campo]: valor },
+      attributes: ['id'] 
+    });
+    return !!resultado;
   } catch (error) {
-    console.error('Error en buscarDNI:', error);
+    console.error(`Error verificando ${campo}:`, error);
     throw error;
   }
 };
 
-const buscarPlaca = async (placa) => {
+const verificarDNI = async (dni) => verificarExistencia(Usuario, 'dni', dni);
+const verificarCorreo = async (correo) => verificarExistencia(Usuario, 'correo', correo);
+const verificarPlaca = async (placa) => verificarExistencia(Vehiculo, 'placa', placa);
+
+const buscarUsuarioPor = async (campo, valor, excludePassword = true) => {
   try {
-    const vehiculo = await Vehiculo.findOne({ where: { placa } });
-    console.log('🔍 Resultado buscarPlaca:', vehiculo);
-    return vehiculo;
+    return await Usuario.findOne({ 
+      where: { [campo]: valor },
+      attributes: excludePassword ? { exclude: ['contrasena'] } : undefined
+    });
   } catch (error) {
-    console.error(' Error en buscarPlaca:', error);
-    throw error;
+    console.error(`Error buscando usuario por ${campo}:`, error);
+    throw new Error(`Error al buscar usuario por ${campo}`);
   }
 };
+
+const buscarDNI = async (dni) => buscarUsuarioPor('dni', dni);
+const buscarPlaca = async (placa) => verificarExistencia(Vehiculo, 'placa', placa);
 
 const buscarUsuarioPorCorreo = async (correo) => {
   try {
-    const usuario = await Usuario.findOne({
+    return await Usuario.findOne({ 
       where: { correo },
-      attributes: ['id', 'nombre', 'apellido', 'dni', 'fotoPerfil', 'fotoCarnet', 'contrasena', 'telefono']
+      attributes: ['id', 'nombre', 'apellido', 'correo', 'contrasena', 'role_id']
     });
-    console.log('🔍 Resultado buscarUsuarioPorCorreo:', usuario);
-    return usuario;
   } catch (error) {
     console.error('Error en buscarUsuarioPorCorreo:', error);
     throw error;
@@ -63,33 +96,23 @@ const buscarUsuarioPorCorreo = async (correo) => {
 
 const login = async (correo, contrasena) => {
   try {
-    const usuarioVerificar = await buscarUsuarioPorCorreo(correo);
+    const usuario = await buscarUsuarioPorCorreo(correo);
+    if (!usuario) return null;
 
-    if (!usuarioVerificar) {
-      console.log(' Usuario no encontrado en login');
-      return null;
-    }
+    const contrasenaValida = await bcryptjs.compare(contrasena, usuario.contrasena);
+    if (!contrasenaValida) return null;
 
-    const compararContra = await bcryptjs.compare(contrasena, usuarioVerificar.contrasena);
-
-    if (compararContra) {
-      return {
-        id: usuarioVerificar.id,
-        nombre: usuarioVerificar.nombre,
-        apellido: usuarioVerificar.apellido,
-        dni: usuarioVerificar.dni,
-        fotoPerfil: usuarioVerificar.fotoPerfil,
-        fotoCarnet: usuarioVerificar.fotoCarnet,
-        telefono: usuarioVerificar.telefono // 👈 Agregado en la respuesta
-      };
-    } else {
-      console.log('Contraseña incorrecta');
-      return null;
-    }
+    return {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      correo: usuario.correo,
+      role_id: usuario.role_id
+    };
 
   } catch (error) {
-    console.error(' Error en login:', error);
-    throw error;
+    console.error('Error en login:', error);
+    throw new Error('Error durante el login');
   }
 };
 
@@ -98,5 +121,8 @@ module.exports = {
   buscarUsuarioPorCorreo,
   login,
   buscarDNI,
-  buscarPlaca
+  buscarPlaca,
+  verificarDNI,
+  verificarCorreo, 
+  verificarPlaca
 };

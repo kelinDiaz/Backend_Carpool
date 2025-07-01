@@ -5,7 +5,6 @@ const Rol = require('./rol.model');
 const Usuario = require('./usuario.model');
 const Vehiculo = require('./vehiculo.model');
 
-// Definir asociaciones aquí, solo aquí
 Usuario.belongsTo(Rol, { foreignKey: 'role_id' });
 Rol.hasMany(Usuario, { foreignKey: 'role_id' });
 
