@@ -156,6 +156,7 @@ const inicioSesion = async (req, res) => {
   }
 };
 
+
 const checkDNI = async (req, res) => {
   try {
     const { dni } = req.query;
