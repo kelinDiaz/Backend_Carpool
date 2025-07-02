@@ -140,9 +140,19 @@ const inicioSesion = async (req, res) => {
     }
 
     const resultado = await usuarioService.login(correo, contrasena);
+
     if (!resultado) {
-      return response.error(res, 401, 'Credenciales inválidas');
+      return res.status(400).json({ available: false, message: 'Error en los datos ingresados no encontrados' }); 
+      
     }
+    console.log(resultado.contrasena);
+    console.log(contrasena);
+
+    const contrasenaValida = await bcryptjs.compare(contrasena,resultado.contrasena);
+    if (!contrasenaValida) 
+      return res.status(400).json({ available: false, message: 'Error en los datos ingresados contraseña' });
+
+  
 
     return response.success(res, 200, 'Inicio de sesión exitoso', {
       data: {
@@ -151,8 +161,8 @@ const inicioSesion = async (req, res) => {
           nombre: resultado.nombre,
           correo: resultado.correo,
           role_id: resultado.role_id
-        },
-        token: resultado.token
+        }
+        /*token: resultado.token*/
       }
     });
 
