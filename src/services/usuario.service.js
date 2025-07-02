@@ -97,10 +97,21 @@ const buscarUsuarioPorCorreo = async (correo) => {
 const login = async (correo, contrasena) => {
   try {
     const usuario = await buscarUsuarioPorCorreo(correo);
-    if (!usuario) return null;
+    if (!usuario) {
+      const error = new Error('Correo no registrado');
+      error.code = 'EMAIL_NOT_FOUND';
+      throw error;
+    }
+
+    console.log('Contraseña recibida:', contrasena);
+    console.log('Hash almacenado en BD:', usuario.contrasena);
 
     const contrasenaValida = await bcryptjs.compare(contrasena, usuario.contrasena);
-    if (!contrasenaValida) return null;
+    if (!contrasenaValida) {
+      const error = new Error('Contraseña incorrecta');
+      error.code = 'INVALID_PASSWORD';
+      throw error;
+    }
 
     return {
       id: usuario.id,
@@ -112,9 +123,10 @@ const login = async (correo, contrasena) => {
 
   } catch (error) {
     console.error('Error en login:', error);
-    throw new Error('Error durante el login');
+    throw error;
   }
 };
+
 
 module.exports = {
   crearUsuario,

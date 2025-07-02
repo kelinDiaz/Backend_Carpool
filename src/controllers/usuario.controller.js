@@ -1,4 +1,3 @@
-const bcryptjs = require('bcryptjs');
 const usuarioService = require('../services/usuario.service');
 
 const response = {
@@ -80,15 +79,13 @@ const registrarUsuario = async (req, res) => {
       return response.error(res, 400, 'Errores de validación', errores);
     }
 
-    const salt = await bcryptjs.genSalt(10);
-    const contrasenaEncriptada = await bcryptjs.hash(contrasena, salt);
-
+    // 👇 Ya no encriptamos aquí la contraseña
     const usuarioData = {
       nombre,
       apellido,
       dni,
       correo,
-      contrasena: contrasenaEncriptada,
+      contrasena, // ← se enviará como está, se encripta en el service
       role_id,
       telefono,
       fotoPerfil: fotoPerfil[0]?.path || null,
@@ -140,23 +137,20 @@ const inicioSesion = async (req, res) => {
     }
 
     const resultado = await usuarioService.login(correo, contrasena);
-    if (!resultado) {
-      return response.error(res, 401, 'Credenciales inválidas');
-    }
 
     return response.success(res, 200, 'Inicio de sesión exitoso', {
-      data: {
-        usuario: {
-          id: resultado.id,
-          nombre: resultado.nombre,
-          correo: resultado.correo,
-          role_id: resultado.role_id
-        },
-        token: resultado.token
-      }
+      usuario: resultado,
+      token: 'fake_token_aqui' // (Reemplaza con tu lógica real de JWT si aplica)
     });
 
   } catch (error) {
+    if (error.code === 'EMAIL_NOT_FOUND') {
+      return response.error(res, 404, error.message, { correo: error.message });
+    }
+    if (error.code === 'INVALID_PASSWORD') {
+      return response.error(res, 401, error.message, { contrasena: error.message });
+    }
+
     console.error('Error en inicioSesion:', error);
     return response.error(res, 500, 'Error interno al iniciar sesión');
   }
