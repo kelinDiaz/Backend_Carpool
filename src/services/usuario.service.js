@@ -96,20 +96,18 @@ const buscarUsuarioPorCorreo = async (correo) => {
 
 const login = async (correo, contrasena) => {
   try {
-    const resultado = Usuario.findOne({where : { correo }});
-    return resultado;
+    const usuario = await buscarUsuarioPorCorreo(correo);
+    if (!usuario) return null;
 
-    const contrasenaValida = await bcryptjs.compare(contrasena, resultado.contrasena);
+    const contrasenaValida = await bcryptjs.compare(contrasena, usuario.contrasena);
     if (!contrasenaValida) return null;
 
-
-
     return {
-      id: resultado.id,
-      nombre: resultado.nombre,
-      apellido: resultado.apellido,
-      correo: resultado.correo,
-      role_id: resultado.role_id
+      id: usuario.id,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      correo: usuario.correo,
+      role_id: usuario.role_id
     };
 
   } catch (error) {
