@@ -79,13 +79,12 @@ const registrarUsuario = async (req, res) => {
       return response.error(res, 400, 'Errores de validación', errores);
     }
 
-    // 👇 Ya no encriptamos aquí la contraseña
     const usuarioData = {
       nombre,
       apellido,
       dni,
       correo,
-      contrasena, // ← se enviará como está, se encripta en el service
+      contrasena, 
       role_id,
       telefono,
       fotoPerfil: fotoPerfil[0]?.path || null,
@@ -140,7 +139,7 @@ const inicioSesion = async (req, res) => {
 
     return response.success(res, 200, 'Inicio de sesión exitoso', {
       usuario: resultado,
-      token: 'fake_token_aqui' // (Reemplaza con tu lógica real de JWT si aplica)
+      token: 'fake_token' 
     });
 
   } catch (error) {

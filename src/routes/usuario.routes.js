@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const usuarioController = require('../controllers/usuario.controller');
-const { usuarioUpload } = require('../config/multer'); // Middleware multer correcto
-const { validateRegistro } = require('../middlewares/validators/usuario.validator'); // Validación de datos
+const { usuarioUpload } = require('../config/multer'); 
+const { validateRegistro } = require('../middlewares/validators/usuario.validator'); 
 
 router.get('/status', (req, res) => {
   res.json({

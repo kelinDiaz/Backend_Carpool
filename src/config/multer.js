@@ -9,7 +9,7 @@ const ensureUploadsDir = () => {
   try {
     if (!fs.existsSync(basePath)) {
       fs.mkdirSync(basePath, { recursive: true });
-      console.log(`📂 Directorio de uploads creado: ${basePath}`);
+      console.log(` Directorio de uploads creado: ${basePath}`);
     }
 
     const subdirs = ['perfiles', 'carnets', 'licencias', 'vehiculos'];
