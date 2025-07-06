@@ -29,8 +29,27 @@ const obtenerViajesPorConductor = async (req, res) => {
   }
 };
 
+
+
+const listarViajesConPlazasDisponibles = async (req, res) => {
+  try {
+    const viajes = await viajeService.listarViajesConPlazasDisponibles();
+    res.status(200).json({
+      success: true,
+      data: viajes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error al obtener los viajes con plazas disponibles',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   publicarViaje,
   listarViajes,
-  obtenerViajesPorConductor
+  obtenerViajesPorConductor, 
+  listarViajesConPlazasDisponibles
 };

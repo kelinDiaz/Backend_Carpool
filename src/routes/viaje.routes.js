@@ -22,6 +22,9 @@ router.get('/listar', viajeController.listarViajes);
 
 router.get('/conductor/:id', viajeController.obtenerViajesPorConductor);
 
+router.get('/disponibles', viajeController.listarViajesConPlazasDisponibles);
+
+
 router.use((err, req, res, next) => {
   if (err.name === 'SequelizeValidationError') {
     return res.status(400).json({

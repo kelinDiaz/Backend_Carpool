@@ -16,8 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/usuarios', usuarioRoutes);
 
-
-
 app.use('/api/viajes', viajeRoutes);
 
 

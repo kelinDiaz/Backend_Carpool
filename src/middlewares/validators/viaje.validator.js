@@ -25,7 +25,7 @@ const validatePublicarViaje = [
 
   body('plazas_disponibles')
     .optional()
-    .isInt({ min: 1 }).withMessage('Las plazas disponibles deben ser un número entero positivo'),
+    .isInt({ min: 0 }).withMessage('Las plazas disponibles deben mayor o igual a 0'),
 
   body('conductor_id')
     .notEmpty().withMessage('El id del conductor es obligatorio')

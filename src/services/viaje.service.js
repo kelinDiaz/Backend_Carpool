@@ -1,15 +1,14 @@
 
 
+const { Op } = require('sequelize');
 
 const {Viaje, Usuario, Rol} = require('../models');
-
 
 
 
 const publicarViaje = async (viajeData) => {
   const { conductor_id } = viajeData;
 
-  // Verificar que el usuario sea conductor
   const conductor = await Usuario.findByPk(conductor_id, {
     include: [{ model: Rol }]
   });
@@ -22,10 +21,10 @@ const publicarViaje = async (viajeData) => {
     throw new Error('El usuario no tiene permisos para publicar un viaje');
   }
 
-  // Crear el viaje
   const nuevoViaje = await Viaje.create(viajeData);
   return nuevoViaje;
 };
+
 
 const listarViajes = async () => {
   const viajes = await Viaje.findAll({
@@ -53,8 +52,30 @@ const obtenerViajesPorConductor = async (conductor_id) => {
   return viajes;
 };
 
+
+
+const listarViajesConPlazasDisponibles = async () => {
+  const viajes = await Viaje.findAll({
+    where: {
+      plazas_disponibles: {
+        [Op.gt]: 0
+      }
+    },
+    include: [{
+      model: Usuario,
+      as: 'Usuario',
+      attributes: ['id', 'nombre', 'apellido'],
+      include: [{ model: Rol, attributes: ['nombre'] }]
+    }]
+  });
+
+  return viajes;
+};
+
+
 module.exports = {
   publicarViaje,
   listarViajes,
-  obtenerViajesPorConductor
+  obtenerViajesPorConductor,
+   listarViajesConPlazasDisponibles
 };
