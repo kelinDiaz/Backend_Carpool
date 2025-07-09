@@ -156,6 +156,8 @@ const inicioSesion = async (req, res) => {
 };
 
 
+
+
 const checkDNI = async (req, res) => {
   try {
     const { dni } = req.query;
@@ -216,10 +218,38 @@ const checkPlaca = async (req, res) => {
   }
 };
 
+
+      const actualizacion = async (req, res) =>{
+          try{
+
+              const { correo } = req.params;
+              const datosUsuario = req.body;
+              const respuesta = await usuarioService.actualizarDatos(correo, datosUsuario);
+
+              if(!respuesta){
+                return res.status(404).json({ message: 'Usuario no  actualizado correctamente' });
+              }
+               res.status(200).json({
+                 message: 'Usuario actualizado correctamente'
+              });
+
+          }catch(error){
+              res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+
+          }
+
+
+      };
+
+
 module.exports = {
   registrarUsuario,
   inicioSesion,
   checkDNI,
   checkCorreo,
-  checkPlaca
+  checkPlaca,
+  actualizacion
 };

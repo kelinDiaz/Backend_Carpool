@@ -2,6 +2,7 @@ const bcryptjs = require('bcryptjs');
 const sequelize = require('../config/database');
 const Usuario = require('../models/usuario.model');
 const Vehiculo = require('../models/vehiculo.model');
+const { where } = require('sequelize');
 
 const crearUsuario = async (datosUsuario, datosVehiculo) => {
   const transaction = await sequelize.transaction();
@@ -86,13 +87,14 @@ const buscarUsuarioPorCorreo = async (correo) => {
   try {
     return await Usuario.findOne({ 
       where: { correo },
-      attributes: ['id', 'nombre', 'apellido', 'correo', 'contrasena', 'role_id']
+      attributes: ['id', 'nombre', 'apellido', 'correo', 'contrasena', 'role_id', 'telefono']
     });
   } catch (error) {
     console.error('Error en buscarUsuarioPorCorreo:', error);
     throw error;
   }
 };
+
 
 const login = async (correo, contrasena) => {
   try {
@@ -103,8 +105,7 @@ const login = async (correo, contrasena) => {
       throw error;
     }
 
-    console.log('Contraseña recibida:', contrasena);
-    console.log('Hash almacenado en BD:', usuario.contrasena);
+    
 
     const contrasenaValida = await bcryptjs.compare(contrasena, usuario.contrasena);
     if (!contrasenaValida) {
@@ -117,7 +118,9 @@ const login = async (correo, contrasena) => {
       id: usuario.id,
       nombre: usuario.nombre,
       apellido: usuario.apellido,
+      telefono: usuario.telefono,
       correo: usuario.correo,
+      contrasena:usuario.contrasena,
       role_id: usuario.role_id
     };
 
@@ -125,6 +128,46 @@ const login = async (correo, contrasena) => {
     console.error('Error en login:', error);
     throw error;
   }
+};
+
+
+
+const actualizarDatos = async (correo, actualizacion) =>{
+      try{
+
+          if (!actualizacion || Object.keys(actualizacion).length == 0) {
+            return { 
+                success: false, 
+                message: 'No se proporcionaron datos para actualizar' 
+            };
+        }
+           
+            const buscarUsuario = await buscarUsuarioPorCorreo(correo);
+
+            if(!buscarUsuario){
+               
+                return { success: false, message: 'Actualizacion no completada' };
+                
+
+            }
+
+            const confirmacion =   await Usuario.update(actualizacion, { where: { correo: correo }  });
+
+            if(!confirmacion){
+              
+              return { success: false, message: 'Actualizacion no completada' };
+            }
+
+           
+         
+            return { success: true, message: 'Actualizacion no completada'  };
+             
+      }catch(error){
+            
+          console.error('Error en login:', error);
+          throw error;
+      }
+
 };
 
 
@@ -136,5 +179,6 @@ module.exports = {
   buscarPlaca,
   verificarDNI,
   verificarCorreo, 
-  verificarPlaca
+  verificarPlaca,
+  actualizarDatos
 };
