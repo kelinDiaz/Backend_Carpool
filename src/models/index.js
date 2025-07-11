@@ -5,8 +5,8 @@ const Campus = require('./campusUniversitario.model');
 const Rol = require('./rol.model');
 const Usuario = require('./usuario.model');
 const Vehiculo = require('./vehiculo.model');
-const Viaje = require('./viaje.model');
 const Ruta = require('./ruta.model')
+const Viaje = require('./viaje.model');
 
 
 Usuario.belongsTo(Rol, { foreignKey: 'role_id' });
@@ -25,9 +25,10 @@ Usuario.hasOne(Ruta, { foreignKey: 'usuario_id' });
 Ruta.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
 
-Viaje.belongsTo(Usuario, { foreignKey: 'conductor_id' });
+
 Usuario.hasMany(Viaje, { foreignKey: 'conductor_id' });
 
+Viaje.belongsTo(Usuario, { foreignKey: 'conductor_id' });
 
 
 module.exports = {
@@ -36,8 +37,8 @@ module.exports = {
   Campus,
   Usuario,
   Vehiculo,
+  Ruta,
   Viaje
-
 
 
 };

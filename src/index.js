@@ -6,8 +6,9 @@ const sequelize = require('./config/database');
 require('./models/rol.model');
 require('./models/campusUniversitario.model');
 require('./models/usuario.model');
-require('./models/vehiculo.model')
-require('./models/ruta.model')
+require('./models/vehiculo.model');
+require('./models/ruta.model');
+require ('./models/viaje.model')
 
 const PORT = process.env.PORT || 3000;
 

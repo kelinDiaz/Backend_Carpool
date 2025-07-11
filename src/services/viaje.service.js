@@ -1,81 +1,57 @@
 
 
-const { Op } = require('sequelize');
 
-const {Viaje, Usuario, Rol} = require('../models');
+const Viaje = require('../models/viaje.model');
+const Ruta = require('../models/ruta.model')
 
+const crearViaje = async ({
+  direccion_seleccionada,
+  hora_salida, // "ahora" o "en_5_minutos"
+  asientos_disponibles,
+  precio_asiento,
+  descripcion,
+  conductor_id
+}) => {
+  // 1. Obtener ruta del conductor
+  const ruta = await Ruta.findOne({ where: { usuario_id: conductor_id } });
+  if (!ruta) throw new Error('Ruta del conductor no encontrada');
 
+  // 2. Determinar origen y destino según selección
+  let origen, destino;
+  if (direccion_seleccionada === 'hacia_universidad') {
+    origen = ruta.direccion_casa;
+    destino = ruta.direccion_campus;
+  } else if (direccion_seleccionada === 'hacia_casa') {
+    origen = ruta.direccion_campus;
+    destino = ruta.direccion_casa;
+  } else {
+    throw new Error('Dirección seleccionada no válida');
+  }
 
-const publicarViaje = async (viajeData) => {
-  const { conductor_id } = viajeData;
+  // 3. Calcular hora de salida (formato HH:mm)
+  let hora_salida_final;
+  const now = new Date();
+  if (hora_salida === 'ahora') {
+    hora_salida_final = now.toTimeString().slice(0, 5); // "HH:mm"
+  } else if (hora_salida === 'en_5_minutos') {
+    now.setMinutes(now.getMinutes() + 5);
+    hora_salida_final = now.toTimeString().slice(0, 5);
+  } else {
+    throw new Error('Hora de salida no válida');
+  }
 
-  const conductor = await Usuario.findByPk(conductor_id, {
-    include: [{ model: Rol }]
+  // 4. Crear viaje
+  const nuevoViaje = await Viaje.create({
+    conductor_id,
+    origen,
+    destino,
+    hora_salida: hora_salida_final,
+    asientos_disponibles,
+    precio_asiento,
+    descripcion
   });
 
-  if (!conductor) {
-    throw new Error('El conductor no existe');
-  }
-
-  if (conductor.Rol.nombre !== 'conductor') {
-    throw new Error('El usuario no tiene permisos para publicar un viaje');
-  }
-
-  const nuevoViaje = await Viaje.create(viajeData);
   return nuevoViaje;
 };
 
-
-const listarViajes = async () => {
-  const viajes = await Viaje.findAll({
-    include: [{
-      model: Usuario,
-      as: 'Usuario',
-      attributes: ['id', 'nombre', 'apellido'],
-      include: [{ model: Rol, attributes: ['nombre'] }]
-    }]
-  });
-
-  return viajes;
-};
-
-const obtenerViajesPorConductor = async (conductor_id) => {
-  const viajes = await Viaje.findAll({
-    where: { conductor_id },
-    include: [{
-      model: Usuario,
-      as: 'Usuario',
-      attributes: ['id', 'nombre', 'apellido']
-    }]
-  });
-
-  return viajes;
-};
-
-
-
-const listarViajesConPlazasDisponibles = async () => {
-  const viajes = await Viaje.findAll({
-    where: {
-      plazas_disponibles: {
-        [Op.gt]: 0
-      }
-    },
-    include: [{
-      model: Usuario,
-      as: 'Usuario',
-      attributes: ['id', 'nombre', 'apellido'],
-      include: [{ model: Rol, attributes: ['nombre'] }]
-    }]
-  });
-
-  return viajes;
-};
-
-
-module.exports = {
-  publicarViaje,
-  listarViajes,
-  obtenerViajesPorConductor,
-   listarViajesConPlazasDisponibles
-};
+module.exports = { crearViaje };

@@ -1,55 +1,14 @@
-// controllers/viaje.controller.js
+
 const viajeService = require('../services/viaje.service');
 
-const publicarViaje = async (req, res) => {
+const crearViaje = async (req, res) => {
   try {
-    const nuevoViaje = await viajeService.publicarViaje(req.body);
-    res.status(201).json({ message: 'Viaje publicado exitosamente', data: nuevoViaje });
+    const viaje = await viajeService.crearViaje(req.body);
+    res.status(201).json({ mensaje: 'Viaje creado correctamente', viaje });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error al crear viaje:', error.message);
+    res.status(400).json({ error: error.message });
   }
 };
 
-const listarViajes = async (req, res) => {
-  try {
-    const viajes = await viajeService.listarViajes();
-    res.status(200).json({ data: viajes });
-  } catch (error) {
-    res.status(500).json({ message: 'Error al listar los viajes' });
-  }
-};
-
-const obtenerViajesPorConductor = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const viajes = await viajeService.obtenerViajesPorConductor(id);
-    res.status(200).json({ data: viajes });
-  } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los viajes del conductor' });
-  }
-};
-
-
-
-const listarViajesConPlazasDisponibles = async (req, res) => {
-  try {
-    const viajes = await viajeService.listarViajesConPlazasDisponibles();
-    res.status(200).json({
-      success: true,
-      data: viajes
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error al obtener los viajes con plazas disponibles',
-      error: error.message
-    });
-  }
-};
-
-module.exports = {
-  publicarViaje,
-  listarViajes,
-  obtenerViajesPorConductor, 
-  listarViajesConPlazasDisponibles
-};
+module.exports = { crearViaje };

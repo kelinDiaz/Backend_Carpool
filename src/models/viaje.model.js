@@ -1,16 +1,49 @@
-
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Usuario = require('./usuario.model');
 
 const Viaje = sequelize.define('Viaje', {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  origen: { type: DataTypes.STRING(255), allowNull: false },
-  destino: { type: DataTypes.STRING(255), allowNull: false },
-  fecha_salida: { type: DataTypes.DATEONLY, allowNull: false },
-  hora_salida: { type: DataTypes.TIME, allowNull: false },
-  precio: { type: DataTypes.DECIMAL(10,2), allowNull: false },
-  plazas_disponibles: { type: DataTypes.INTEGER, allowNull: true },
- conductor_id: { type: DataTypes.INTEGER, allowNull: false },
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+
+  conductor_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+
+
+  origen: {
+    type: DataTypes.STRING(255),
+    allowNull: false
+  },
+
+  destino: {
+    type: DataTypes.STRING(255),
+    allowNull: false
+  },
+
+  hora_salida: {
+    type: DataTypes.STRING(5), // formato HH:mm
+    allowNull: false
+  },
+
+  asientos_disponibles: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+
+  precio_asiento: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+
+  descripcion: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  }
 
 }, {
   tableName: 'viajes',
