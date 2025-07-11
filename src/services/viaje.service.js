@@ -12,11 +12,11 @@ const crearViaje = async ({
   descripcion,
   conductor_id
 }) => {
-  // 1. Obtener ruta del conductor
+  
   const ruta = await Ruta.findOne({ where: { usuario_id: conductor_id } });
   if (!ruta) throw new Error('Ruta del conductor no encontrada');
 
-  // 2. Determinar origen y destino según selección
+  
   let origen, destino;
   if (direccion_seleccionada === 'hacia_universidad') {
     origen = ruta.direccion_casa;
@@ -28,7 +28,7 @@ const crearViaje = async ({
     throw new Error('Dirección seleccionada no válida');
   }
 
-  // 3. Calcular hora de salida (formato HH:mm)
+  
   let hora_salida_final;
   const now = new Date();
   if (hora_salida === 'ahora') {
@@ -40,7 +40,7 @@ const crearViaje = async ({
     throw new Error('Hora de salida no válida');
   }
 
-  // 4. Crear viaje
+
   const nuevoViaje = await Viaje.create({
     conductor_id,
     origen,

@@ -7,3 +7,5 @@ const campusController = require('../controllers/campus.controller');
 router.get('/', campusController.getTodosLosCampus);
 
 module.exports = router; 
+
+

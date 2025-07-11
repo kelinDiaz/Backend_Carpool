@@ -13,7 +13,6 @@ Usuario.belongsTo(Rol, { foreignKey: 'role_id' });
 Rol.hasMany(Usuario, { foreignKey: 'role_id' });
 
 
-
 Usuario.belongsTo(Campus, { foreignKey: 'campus_id' });
 Campus.hasMany(Usuario, { foreignKey: 'campus_id' });
 
