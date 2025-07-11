@@ -2,6 +2,7 @@ const bcryptjs = require('bcryptjs');
 const sequelize = require('../config/database');
 const Usuario = require('../models/usuario.model');
 const Vehiculo = require('../models/vehiculo.model');
+const Rol = require('../models/rol.model'); 
 
 const crearUsuario = async (datosUsuario, datosVehiculo) => {
   const transaction = await sequelize.transaction();
@@ -10,10 +11,8 @@ const crearUsuario = async (datosUsuario, datosVehiculo) => {
     const salt = await bcryptjs.genSalt(10);
     datosUsuario.contrasena = await bcryptjs.hash(datosUsuario.contrasena, salt);
     
-    
     const nuevoUsuario = await Usuario.create(datosUsuario, { transaction });
 
-    
     if (datosUsuario.role_id === 2 && datosVehiculo) {
       await Vehiculo.create({
         usuario_id: nuevoUsuario.id,
@@ -26,7 +25,6 @@ const crearUsuario = async (datosUsuario, datosVehiculo) => {
       }, { transaction });
     }
 
-    
     await transaction.commit();
     
     return {
@@ -37,15 +35,13 @@ const crearUsuario = async (datosUsuario, datosVehiculo) => {
     };
 
   } catch (error) {
-    
     if (transaction) await transaction.rollback();
     console.error('Error en crearUsuario:', error);
-    
-    
+
     if (error.name === 'SequelizeUniqueConstraintError') {
       throw new Error('Datos duplicados: ' + error.errors.map(e => e.path).join(', '));
     }
-    
+
     throw new Error('Error al registrar usuario: ' + error.message);
   }
 };
@@ -86,7 +82,12 @@ const buscarUsuarioPorCorreo = async (correo) => {
   try {
     return await Usuario.findOne({ 
       where: { correo },
-      attributes: ['id', 'nombre', 'apellido', 'correo', 'contrasena', 'role_id']
+      attributes: ['id', 'nombre', 'apellido', 'correo', 'contrasena', 'role_id'],
+      include: [{
+        model: Rol,
+        as: 'Rol',
+        attributes: ['nombre']
+      }]
     });
   } catch (error) {
     console.error('Error en buscarUsuarioPorCorreo:', error);
@@ -103,9 +104,6 @@ const login = async (correo, contrasena) => {
       throw error;
     }
 
-    console.log('Contraseña recibida:', contrasena);
-    console.log('Hash almacenado en BD:', usuario.contrasena);
-
     const contrasenaValida = await bcryptjs.compare(contrasena, usuario.contrasena);
     if (!contrasenaValida) {
       const error = new Error('Contraseña incorrecta');
@@ -113,20 +111,13 @@ const login = async (correo, contrasena) => {
       throw error;
     }
 
-    return {
-      id: usuario.id,
-      nombre: usuario.nombre,
-      apellido: usuario.apellido,
-      correo: usuario.correo,
-      role_id: usuario.role_id
-    };
+    return usuario; 
 
   } catch (error) {
     console.error('Error en login:', error);
     throw error;
   }
 };
-
 
 module.exports = {
   crearUsuario,
