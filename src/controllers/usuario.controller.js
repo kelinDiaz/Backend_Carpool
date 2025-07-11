@@ -20,7 +20,7 @@ const response = {
 const registrarUsuario = async (req, res) => {
   try {
     const { 
-      nombre, apellido, dni, correo, contrasena, role_id, telefono, vehiculo
+      nombre, apellido, dni, correo, contrasena, role_id, telefono, campus_id, vehiculo
     } = req.body;
 
     const { 
@@ -87,6 +87,7 @@ const registrarUsuario = async (req, res) => {
       contrasena, 
       role_id,
       telefono,
+      campus_id,
       fotoPerfil: fotoPerfil[0]?.path || null,
       fotoCarnet: fotoCarnet[0]?.path || null,
       licencia_path: licencia[0]?.path || null
