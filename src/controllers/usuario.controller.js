@@ -242,6 +242,105 @@ const checkPlaca = async (req, res) => {
 
       };
 
+       const actualizacionContra = async (req, res) =>{
+          try{
+
+              const { correo } = req.params;
+              const  {contrasena}   = req.body;
+              const respuesta = await usuarioService.cambiarContra(correo,contrasena);
+
+              if(!respuesta){
+                return res.status(404).json({ message: 'Contraseña no  actualizado correctamente' });
+              }
+               res.status(200).json({
+                 message: 'Contraseña actualizado correctamente'
+              });
+
+          }catch(error){
+              res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+
+          }
+
+
+      };
+
+      const cFotoPerfil = async (req, res) => {
+        try {
+        const { id } = req.params;
+
+            const resultado = await usuarioService.verFotoPerfil(id);
+            if(resultado){
+
+            const rutaRelativa = resultado.valor
+            .replace(/\\/g, '/')
+            .replace(/^.*uploads/, 'uploads');
+
+          const url = `${req.protocol}://${req.get('host')}/${rutaRelativa}`;
+              
+              return res.status(200).json({ available: true, url});
+            }else{
+              return res.status(400).json({ available: false, message: 'No se encontro una imagen' });
+            }
+
+        } catch (error) {
+          console.error('Error verificando placa:', error);
+          return res.status(500).json({ available: true, message: 'Error para obtener datos' });
+        }
+};  
+
+ const cFotoCarnet = async (req, res) => {
+        try {
+        const { id } = req.params;
+
+            const resultado = await usuarioService.verFotoCarnet(id);
+            if(resultado){
+
+            const rutaRelativa = resultado.valor
+            .replace(/\\/g, '/')
+            .replace(/^.*uploads/, 'uploads');
+
+          const url = `${req.protocol}://${req.get('host')}/${rutaRelativa}`;
+              
+              return res.status(200).json({ available: true, url});
+            }else{
+              return res.status(400).json({ available: false, message: 'No se encontro una imagen' });
+            }
+
+        } catch (error) {
+          console.error('Error verificando placa:', error);
+          return res.status(500).json({ available: true, message: 'Error para obtener datos' });
+        }
+};
+
+ const cFotoVehiculo = async (req, res) => {
+        try {
+        const { id } = req.params;
+
+            const resultado = await usuarioService.verFotoVehiculo(id);
+            if(resultado){
+
+            const rutaRelativa = resultado.valor
+            .replace(/\\/g, '/')
+            .replace(/^.*uploads/, 'uploads');
+
+          const url = `${req.protocol}://${req.get('host')}/${rutaRelativa}`;
+              
+              return res.status(200).json({ available: true, url});
+            }else{
+              return res.status(400).json({ available: false, message: 'No se encontro una imagen' });
+            }
+
+        } catch (error) {
+          console.error('Error verificando placa:', error);
+          return res.status(500).json({ available: true, message: 'Error para obtener datos' });
+        }
+};
+
+
+
 
 module.exports = {
   registrarUsuario,
@@ -249,5 +348,9 @@ module.exports = {
   checkDNI,
   checkCorreo,
   checkPlaca,
-  actualizacion
+  actualizacion,
+  cFotoCarnet,
+  cFotoPerfil,
+  cFotoVehiculo,
+  actualizacionContra
 };

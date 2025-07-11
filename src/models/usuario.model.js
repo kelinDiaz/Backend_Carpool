@@ -4,6 +4,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Rol = require('./rol.model')
 
+
 const Usuario = sequelize.define('Usuario', {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   nombre: { type: DataTypes.STRING(100), allowNull: false },
