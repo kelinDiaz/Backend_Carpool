@@ -139,7 +139,7 @@ const inicioSesion = async (req, res) => {
     const resultado = await usuarioService.login(correo, contrasena);
 
     return response.success(res, 200, 'Inicio de sesión exitoso', {
-      usuario: resultado,
+      usuario: resultado.usuario, 
       token: 'fake_token' 
     });
 
@@ -155,9 +155,6 @@ const inicioSesion = async (req, res) => {
     return response.error(res, 500, 'Error interno al iniciar sesión');
   }
 };
-
-
-
 
 const checkDNI = async (req, res) => {
   try {
