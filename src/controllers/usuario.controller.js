@@ -280,7 +280,7 @@ const checkPlaca = async (req, res) => {
 
           const url = `${req.protocol}://${req.get('host')}/${rutaRelativa}`;
               
-              return res.status(400).json({ available: true, url});
+              return res.status(200).json({ available: true, url});
             }else{
               return res.status(400).json({ available: false, message: 'No se encontro una imagen' });
             }
@@ -304,7 +304,7 @@ const checkPlaca = async (req, res) => {
 
           const url = `${req.protocol}://${req.get('host')}/${rutaRelativa}`;
               
-              return res.status(400).json({ available: true, url});
+              return res.status(200).json({ available: true, url});
             }else{
               return res.status(400).json({ available: false, message: 'No se encontro una imagen' });
             }
@@ -328,7 +328,7 @@ const checkPlaca = async (req, res) => {
 
           const url = `${req.protocol}://${req.get('host')}/${rutaRelativa}`;
               
-              return res.status(400).json({ available: true, url});
+              return res.status(200).json({ available: true, url});
             }else{
               return res.status(400).json({ available: false, message: 'No se encontro una imagen' });
             }
