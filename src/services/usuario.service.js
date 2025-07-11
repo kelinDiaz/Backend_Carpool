@@ -148,6 +148,79 @@ const actualizarDatos = async (correo, actualizacion) => {
   }
 };
 
+    const cargarFoto = async (modelo, campo, id) => {
+  try {
+    const resultado = await modelo.findOne({
+      where: { id: id }
+    });
+
+    if (!resultado) {
+      throw new Error(`No se encontró el registro con id: ${id}`);
+    }
+
+    return {
+      valor: resultado[campo] 
+    };
+  } catch (error) {
+    console.error(`Error cargando campo ${campo}:`, error);
+    throw error;
+  }
+};
+
+const verFotoPerfil = async (id) => await cargarFoto(Usuario, 'fotoPerfil', id);
+const verFotoCarnet = async (id) => await cargarFoto(Usuario, 'fotoCarnet', id);
+const verFotoVehiculo = async (id) => await cargarFoto(Vehiculo, 'foto_vehiculo', id);
+
+
+  const encriptarContra = async(contra) =>{
+        try {
+              const salt = await bcryptjs.genSalt(10);
+ 
+            return await bcryptjs.hash(contra, salt);
+
+
+        }catch(error){
+            console.error('Error en encriptar contraseña:', error);
+            throw error;
+        }
+
+
+};
+
+const cambiarContra = async (correo, contra) =>{
+  try{
+      if (!contra || Object.keys(contra).length == 0)
+        return { 
+                success: false, 
+                message: 'No se proporcionaron datos para actualizar' 
+            };
+
+            if (!correo || !contra) {
+            return { success: false, message: 'Correo y contraseña son requeridos' };
+        }
+
+        if (contra.length < 8) {
+            return { success: false, message: 'La contraseña debe tener al menos 8 caracteres' };
+        }
+
+        const contraStr = String(contra);
+      const contraValida = await encriptarContra(contraStr);
+      const confirmacion =  await Usuario.update({contrasena: contraValida}, { where: { correo: correo }  })
+
+      if(!confirmacion){
+         return { success: false, message: 'No se pudo actualizar' };
+      }
+      return { success: true, message: ' se pudo actualizar' };
+     
+  }catch(error){
+      console.error('Error en actualizar contraseña:', error);
+          throw error;
+
+  }
+
+}; 
+
+
 module.exports = {
   crearUsuario,
   buscarUsuarioPorCorreo,
@@ -157,5 +230,9 @@ module.exports = {
   verificarDNI,
   verificarCorreo,
   verificarPlaca,
-  actualizarDatos
+  actualizarDatos,
+  verFotoCarnet,
+  verFotoPerfil,
+  verFotoVehiculo,
+  cambiarContra
 };
