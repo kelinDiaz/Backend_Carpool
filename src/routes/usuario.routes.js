@@ -22,6 +22,7 @@ router.post('/inicioSesion', usuarioController.inicioSesion);
 router.get('/check-dni', usuarioController.checkDNI);
 router.get('/check-correo', usuarioController.checkCorreo);
 router.get('/check-placa', usuarioController.checkPlaca);
+router.put('/actualizacion/:correo', usuarioController.actualizacion);
 
 router.use((err, req, res, next) => {
   if (err.code === 'LIMIT_FILE_SIZE') {
