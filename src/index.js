@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 sequelize.authenticate()
   .then(() => {
     console.log('Conexión a BD establecida');
-    return sequelize.sync({alter: true});
+    return sequelize.sync();
   })
   .then(() => {
     console.log('Modelos sincronizados');
