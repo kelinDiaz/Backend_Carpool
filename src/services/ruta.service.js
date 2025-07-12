@@ -1,34 +1,31 @@
-
-
 const Ruta = require('../models/ruta.model');
 const Usuario = require('../models/usuario.model');
-const Campus = require('../models/campusUniversitario.model');
-
+const Campus = require('../models/campus.model');
 
 const crearRuta = async ({ usuario_id, direccion_casa }) => {
-  // Verificar si ya tiene ruta
+
   const rutaExistente = await Ruta.findOne({ where: { usuario_id } });
   if (rutaExistente) {
-    throw new Error('El usuario ya tiene una ruta asignada');
+    throw new Error('El conductor ya tiene una ruta asignada');
   }
 
-  // Obtener campus_id del usuario
-  const usuario = await Usuario.findByPk(usuario_id);
+  const usuario = await Usuario.findByPk(usuario_id, {
+    include: [{ model: Campus, as: 'campus' }]
+  });
+
   if (!usuario) {
     throw new Error('Usuario no encontrado');
   }
 
-  // Obtener dirección del campus
-  const campus = await Campus.findByPk(usuario.campus_id);
-  if (!campus) {
-    throw new Error('Campus no encontrado para el usuario');
+  if (!usuario.campus) {
+    throw new Error('El usuario no tiene campus asignado');
   }
 
-  // Crear ruta con la direccion del campus, fecha actual y Solicitud_cambio_ruta null
+  // Creacion de la ruta con direccion_casa y la  direccion_campus obtenida
   const nuevaRuta = await Ruta.create({
     usuario_id,
     direccion_casa,
-    direccion_campus: campus.direccion,
+    direccion_campus: usuario.campus.direccion,
     fecha_ultima_ubicacion: new Date(),
     Solicitud_cambio_ruta: null
   });
@@ -37,5 +34,5 @@ const crearRuta = async ({ usuario_id, direccion_casa }) => {
 };
 
 module.exports = {
-  crearRuta,
+  crearRuta
 };
