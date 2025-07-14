@@ -351,7 +351,7 @@ const actualizarFotoPerfil = async (req, res) => {
               if (!archivo || !archivo.path) {
                   return res.status(400).json({ error: 'No se envió la foto de perfil archivo' });
                 }
-            const rutaRelativa = `C:/Users/Dimas/Desktop/Unah/ingenieria/Backend_Carpool/uploads/perfiles/${archivo.filename}`;
+            const rutaRelativa = `/uploads/perfiles/${archivo.filename}`;
                 const respuesta = await usuarioService.cambiarFotoPerfil(id, rutaRelativa);
                 if(respuesta){
                   return res.status(200).json({ mensaje: "Foto de perfil actualizada", nombreArchivo: archivo.filename });
