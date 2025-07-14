@@ -3,6 +3,7 @@ const sequelize = require('../config/database');
 const Usuario = require('../models/usuario.model');
 const Vehiculo = require('../models/vehiculo.model');
 const Rol = require('../models/rol.model'); 
+const path = require('path');
 
 const crearUsuario = async (datosUsuario, datosVehiculo) => {
   const transaction = await sequelize.transaction();
@@ -220,6 +221,34 @@ const cambiarContra = async (correo, contra) =>{
 
 }; 
 
+const cambiarFotoPerfil = async (id, rutaRelativa) =>{
+  try{
+   return await Usuario.update(
+   {fotoPerfil: rutaRelativa}, { where: { id: id }  }
+  );
+     
+  }catch(error){
+      console.error('Error en actualizar foto perfil:', error);
+          throw error;
+
+  }
+
+}; 
+
+const cambiarCarnet = async (id, rutaRelativa) =>{
+        try{
+        return await Usuario.update(
+        {fotoCarnet: rutaRelativa}, { where: { id: id }  }
+        );
+          
+        }catch(error){
+            console.error('Error en actualizar foto perfil:', error);
+                throw error;
+
+        }
+
+}; 
+
 
 module.exports = {
   crearUsuario,
@@ -234,5 +263,7 @@ module.exports = {
   verFotoCarnet,
   verFotoPerfil,
   verFotoVehiculo,
-  cambiarContra
+  cambiarContra,
+  cambiarFotoPerfil,
+  cambiarCarnet
 };

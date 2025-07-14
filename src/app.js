@@ -3,6 +3,15 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
+const path = require('path');
+
+
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+
+
+
 const usuarioRoutes = require('./routes/usuario.routes');
 
 const viajeRoutes = require('./routes/viaje.routes');
@@ -27,6 +36,8 @@ app.use('/api/viajes', viajeRoutes);
 app.use('/api/campus', campusRoutes);
 
 app.use('/api/ruta', rutaRoutes);
+
+
 
 
 

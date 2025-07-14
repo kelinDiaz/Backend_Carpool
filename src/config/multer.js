@@ -84,8 +84,13 @@ const usuarioUpload = upload.fields([
   { name: 'fotoCarro', maxCount: 1 }
 ]);
 
+const uploadFotoPerfil = upload.single('fotoPerfil');
+const uploadFotoCarnet = upload.single('fotoCarnet');
+
 module.exports = {
   upload,
   usuarioUpload,
-  uploadsBasePath
+  uploadsBasePath,
+  uploadFotoPerfil,
+  uploadFotoCarnet
 };

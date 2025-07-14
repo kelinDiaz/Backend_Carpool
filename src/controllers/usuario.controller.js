@@ -1,4 +1,5 @@
 const usuarioService = require('../services/usuario.service');
+const path = require('path');
 
 const response = {
   success: (res, status, message, data = null) => {
@@ -286,7 +287,7 @@ const checkPlaca = async (req, res) => {
             }
 
         } catch (error) {
-          console.error('Error verificando placa:', error);
+          console.error('Error verificando:', error);
           return res.status(500).json({ available: true, message: 'Error para obtener datos' });
         }
 };  
@@ -339,6 +340,62 @@ const checkPlaca = async (req, res) => {
         }
 };
 
+const actualizarFotoPerfil = async (req, res) => {
+              try {
+                const { id } = req.params;
+                if (!req.file) {
+                  return res.status(400).json({ error: "No se envió la foto de perfil" });
+                }
+              const archivo = req.file || (req.files && req.files.fotoPerfil?.[0]);;
+              console.log('archivo:', archivo);
+              if (!archivo || !archivo.path) {
+                  return res.status(400).json({ error: 'No se envió la foto de perfil archivo' });
+                }
+            const rutaRelativa = `C:/Users/Dimas/Desktop/Unah/ingenieria/Backend_Carpool/uploads/perfiles/${archivo.filename}`;
+                const respuesta = await usuarioService.cambiarFotoPerfil(id, rutaRelativa);
+                if(respuesta){
+                  return res.status(200).json({ mensaje: "Foto de perfil actualizada", nombreArchivo: archivo.filename });
+                }
+              } catch (error) {
+              console.error("Error completo en actualizarFotoPerfil:", {
+                  message: error.message,
+                  stack: error.stack
+                });
+                return res.status(500).json({ 
+                  error: "Error interno al procesar la imagen",
+                  detalles: error.message 
+                });
+              }
+};
+
+
+const actualizarFotoCarnet = async (req, res) => {
+              try {
+                const { id } = req.params;
+                if (!req.file) {
+                  return res.status(400).json({ error: "No se envió la foto de perfil" });
+                }
+              const archivo = req.file;
+              console.log('archivo:', archivo);
+              if (!archivo) {
+                  return res.status(400).json({ error: 'No se envió la foto de perfil archivo' });
+                }
+            const rutaRelativa = `/uploads/carnets/${archivo.filename}`;
+                const respuesta = await usuarioService.cambiarCarnet(id, rutaRelativa);
+                if(respuesta){
+                  return res.status(200).json({ mensaje: "Foto de carnet actualizada", nombreArchivo: archivo.filename });
+                }
+              } catch (error) {
+              console.error("Error completo en actualizarFoto carnet:", {
+                  message: error.message,
+                  stack: error.stack
+                });
+                return res.status(500).json({ 
+                  error: "Error interno al procesar la imagen",
+                  detalles: error.message 
+                });
+              }
+};
 
 
 
@@ -352,5 +409,7 @@ module.exports = {
   cFotoCarnet,
   cFotoPerfil,
   cFotoVehiculo,
-  actualizacionContra
+  actualizacionContra,
+  actualizarFotoPerfil,
+  actualizarFotoCarnet
 };

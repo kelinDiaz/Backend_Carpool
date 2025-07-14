@@ -3,6 +3,8 @@ const router = express.Router();
 const usuarioController = require('../controllers/usuario.controller');
 const { usuarioUpload } = require('../config/multer'); 
 const { validateRegistro } = require('../middlewares/validators/usuario.validator'); 
+const { uploadFotoPerfil } = require('../config/multer');
+const { uploadFotoCarnet } = require('../config/multer');
 
 router.get('/status', (req, res) => {
   res.json({
@@ -12,11 +14,13 @@ router.get('/status', (req, res) => {
   });
 });
 
-router.post('/',
-  usuarioUpload,      
-  validateRegistro,   
-  usuarioController.registrarUsuario
-);
+router.put('/actualizarFotoPerfil/:id',
+   uploadFotoPerfil, 
+   usuarioController.actualizarFotoPerfil);
+
+router.put('/actualizarFotoCarnet/:id', 
+  uploadFotoCarnet, 
+usuarioController.actualizarFotoCarnet);
 
 router.post('/inicioSesion', usuarioController.inicioSesion);
 router.get('/check-dni', usuarioController.checkDNI);
