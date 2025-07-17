@@ -14,6 +14,12 @@ router.get('/status', (req, res) => {
   });
 });
 
+router.post('/',
+  usuarioUpload,      
+  validateRegistro,   
+  usuarioController.registrarUsuario
+);
+
 router.put('/actualizarFotoPerfil/:id',
    uploadFotoPerfil, 
    usuarioController.actualizarFotoPerfil);
