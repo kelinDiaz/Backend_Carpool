@@ -4,6 +4,7 @@ const Usuario = require('../models/usuario.model');
 const Vehiculo = require('../models/vehiculo.model');
 const Rol = require('../models/rol.model'); 
 const path = require('path');
+const Ruta = require('../models/ruta.model');
 
 const crearUsuario = async (datosUsuario, datosVehiculo) => {
   const transaction = await sequelize.transaction();
@@ -88,7 +89,8 @@ const buscarUsuarioPorCorreo = async (correo) => {
         model: Rol,
         as: 'Rol',
         attributes: ['nombre']
-      }]
+      },
+      ]
     });
   } catch (error) {
     console.error('Error en buscarUsuarioPorCorreo:', error);

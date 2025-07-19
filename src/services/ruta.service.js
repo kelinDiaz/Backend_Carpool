@@ -2,7 +2,7 @@
 
 const Ruta = require('../models/ruta.model');
 const Usuario = require('../models/usuario.model');
-const Campus = require('../models/campus.model');
+const Campus = require('../models/campusUniversitario.model');
 
 
 const crearRuta = async ({ usuario_id, direccion_casa }) => {
