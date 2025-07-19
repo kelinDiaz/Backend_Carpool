@@ -43,8 +43,17 @@ const Viaje = sequelize.define('Viaje', {
   descripcion: {
     type: DataTypes.STRING(255),
     allowNull: true
-  }
+  },
 
+
+
+estado: {
+  type: DataTypes.STRING(20),
+  allowNull: false,
+  defaultValue: 'activo'
+},
+
+  
 }, {
   tableName: 'viajes',
   timestamps: false

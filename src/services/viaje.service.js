@@ -55,16 +55,18 @@ const crearViaje = async ({
 };
 
 
-
-const desactivarViaje = async (viajeId) => {
+const finalizarViaje = async (viajeId) => {
   const viaje = await Viaje.findByPk(viajeId);
   if (!viaje) {
     throw new Error('Viaje no encontrado');
   }
 
-  viaje.estado = 'finalizar';
+  viaje.estado = 'finalizado';
   await viaje.save();
 
   return viaje;
 };
-module.exports = { crearViaje, desactivarViaje };
+
+
+
+module.exports = { crearViaje, finalizarViaje };
