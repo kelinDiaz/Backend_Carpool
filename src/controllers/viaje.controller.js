@@ -19,7 +19,6 @@ const getViaje = async (req, res) => {
       return res.status(404).json({ error: 'Viaje no encontrado' });
     }
 
-    // Estructura exacta que necesitas
     res.json({
       origen: viaje.origen,
       destino: viaje.destino,

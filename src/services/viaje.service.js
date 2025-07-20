@@ -56,7 +56,6 @@ const crearViaje = async ({
 
 const getViaje = async (id) => {
   try {
-    // Solo obtenemos los datos esenciales del viaje
     const viaje = await Viaje.findByPk(id, {
       attributes: [
         'origen',
@@ -76,7 +75,7 @@ const getViaje = async (id) => {
     return viaje;
   } catch (error) {
     console.error('Error al obtener viaje:', error);
-    throw error; // Lanzamos el error original para mejor diagnóstico
+    throw error; 
   }
 };
 
