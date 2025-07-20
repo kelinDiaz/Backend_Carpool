@@ -54,6 +54,31 @@ const crearViaje = async ({
   return nuevoViaje;
 };
 
+const getViaje = async (id) => {
+  try {
+    // Solo obtenemos los datos esenciales del viaje
+    const viaje = await Viaje.findByPk(id, {
+      attributes: [
+        'origen',
+        'destino',
+        'hora_salida',
+        'asientos_disponibles',
+        'precio_asiento',
+        'descripcion',
+        'estado'
+      ]
+    });
+
+    if (!viaje) {
+      throw new Error('Viaje no encontrado');
+    }
+
+    return viaje;
+  } catch (error) {
+    console.error('Error al obtener viaje:', error);
+    throw error; // Lanzamos el error original para mejor diagnóstico
+  }
+};
 
 const finalizarViaje = async (viajeId) => {
   const viaje = await Viaje.findByPk(viajeId);
@@ -69,4 +94,4 @@ const finalizarViaje = async (viajeId) => {
 
 
 
-module.exports = { crearViaje, finalizarViaje };
+module.exports = { crearViaje, getViaje, finalizarViaje };

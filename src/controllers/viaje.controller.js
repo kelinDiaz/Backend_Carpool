@@ -11,7 +11,30 @@ const crearViaje = async (req, res) => {
   }
 };
 
+const getViaje = async (req, res) => {
+  try {
+    const viaje = await viajeService.getViaje(req.params.id);
+    
+    if (!viaje) {
+      return res.status(404).json({ error: 'Viaje no encontrado' });
+    }
 
+    // Estructura exacta que necesitas
+    res.json({
+      origen: viaje.origen,
+      destino: viaje.destino,
+      hora_salida: viaje.hora_salida,
+      asientos: viaje.asientos_disponibles,
+      precio: viaje.precio_asiento,
+      descripcion: viaje.descripcion,
+      estado: viaje.estado
+    });
+
+  } catch (error) {
+    console.error('Error en controlador getViaje:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const finalizarViaje = async (req, res) => {
   const { id } = req.params; // 
@@ -26,4 +49,4 @@ const finalizarViaje = async (req, res) => {
 };
 
 
-module.exports = { crearViaje , finalizarViaje};
+module.exports = { crearViaje , getViaje , finalizarViaje};
