@@ -18,6 +18,26 @@ const crearRuta = async (req, res) => {
   }
 };
 
+const obtenerRutaPorUsuarioId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const ruta = await rutaService.obtenerRutaPorUsuarioId(id);
+
+    if (!ruta) {
+      return res.status(404).json({ message: 'Ruta no encontrada' });
+    }
+
+    res.status(200).json(ruta);
+  } catch (error) {
+    console.error('Error al obtener la ruta:', error.message);
+    res.status(500).json({ message: 'Error al obtener la ruta' });
+  }
+};
+
+
+
+
 module.exports = {
-  crearRuta
+  crearRuta,
+  obtenerRutaPorUsuarioId
 };

@@ -36,6 +36,18 @@ const crearRuta = async ({ usuario_id, direccion_casa }) => {
   return nuevaRuta;
 };
 
+const obtenerRutaPorUsuarioId = async (usuario_id) => {
+  const ruta = await Ruta.findOne({ where: { usuario_id } });
+
+  if (!ruta) {
+    return null;
+  }
+
+  return ruta;
+};
+
+
 module.exports = {
   crearRuta,
+  obtenerRutaPorUsuarioId
 };
