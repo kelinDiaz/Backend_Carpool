@@ -48,4 +48,26 @@ const finalizarViaje = async (req, res) => {
 };
 
 
-module.exports = { crearViaje , getViaje , finalizarViaje};
+
+
+
+
+const listarViajesDisponible = async (req, res) => {
+  try {
+    const viajes = await viajeService.listarViajesDisponibles();
+    res.status(200).json({
+      mensaje: 'Viajes disponibles encontrados',
+      viajes
+    });
+  } catch (error) {
+    console.error('Error en obtenerViajesDisponibles:', error);
+    res.status(500).json({
+      error: 'Error al obtener viajes disponibles'
+    });
+  }
+};
+
+
+
+
+module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible};

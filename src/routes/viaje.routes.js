@@ -10,7 +10,11 @@ router.post('/', viajeController.crearViaje);
 
 router.put('/finalizar/:id', viajeController.finalizarViaje);
 
+
+router.get('/disponibles', viajeController.listarViajesDisponible);
+
 router.get('/:id', viajeController.getViaje);
+
 
 
 module.exports = router;

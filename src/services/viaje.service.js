@@ -1,8 +1,14 @@
 
 
 
-const Viaje = require('../models/viaje.model');
-const Ruta = require('../models/ruta.model')
+
+
+const { Viaje, Usuario, sequelize } = require('../models');
+
+const Ruta = require('../models/ruta.model'); 
+
+const { Op } = require('sequelize');
+
 
 const crearViaje = async ({
   direccion_seleccionada,
@@ -92,5 +98,50 @@ const finalizarViaje = async (viajeId) => {
 };
 
 
+const listarViajesDisponibles = async () => {
+  try {
+    const viajes = await Viaje.findAll({
+      where: {
+        estado: 'activo',
+        asientos_disponibles: { [Op.gt]: 0 }
+      },
+      attributes: [
+        'id',
+        'origen',
+        'destino',
+        'hora_salida',
+        'asientos_disponibles',
+        'precio_asiento',
+        'descripcion'
+      ],
+      include: [
+        {
+          model: Usuario, 
+          attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+        }
+      ]
+    });
 
-module.exports = { crearViaje, getViaje, finalizarViaje };
+    return viajes.map(viaje => ({
+      id: viaje.id,
+      origen: viaje.origen,
+      destino: viaje.destino,
+      hora_salida: viaje.hora_salida,
+      asientos_disponibles: viaje.asientos_disponibles,
+      precio_asiento: viaje.precio_asiento,
+      descripcion: viaje.descripcion,
+      conductor: {
+        id: viaje.Usuario.id,
+        nombre: `${viaje.Usuario.nombre} ${viaje.Usuario.apellido}`,
+        fotoPerfil: viaje.Usuario.fotoPerfil
+      }
+    }));
+  } catch (error) {
+    console.error('Error al listar viajes disponibles:', error);
+    throw error;
+  }
+};
+
+
+
+module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles };
