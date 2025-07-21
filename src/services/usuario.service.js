@@ -4,7 +4,6 @@ const Usuario = require('../models/usuario.model');
 const Vehiculo = require('../models/vehiculo.model');
 const Rol = require('../models/rol.model'); 
 const path = require('path');
-const Ruta = require('../models/ruta.model');
 
 const crearUsuario = async (datosUsuario, datosVehiculo) => {
   const transaction = await sequelize.transaction();
@@ -12,18 +11,19 @@ const crearUsuario = async (datosUsuario, datosVehiculo) => {
   try {
     const salt = await bcryptjs.genSalt(10);
     datosUsuario.contrasena = await bcryptjs.hash(datosUsuario.contrasena, salt);
-
+    
     const nuevoUsuario = await Usuario.create(datosUsuario, { transaction });
 
-    if (datosUsuario.role_id === 2 && datosVehiculo) {
+    if (Number(datosUsuario.role_id) === 2 && datosVehiculo) {
       await Vehiculo.create({
         usuario_id: nuevoUsuario.id,
         marca: datosVehiculo.marca,
         modelo: datosVehiculo.modelo,
         color: datosVehiculo.color,
         placa: datosVehiculo.placa,
-        licencia: datosVehiculo.licencia_path,
-        foto_vehiculo: datosVehiculo.foto_vehiculo
+        licencia_conducir: datosVehiculo.licencia_conducir,
+        fotoCarro: datosVehiculo.fotoCarro,
+        fotoRevision:datosVehiculo.fotoRevision
       }, { transaction });
     }
 
@@ -47,6 +47,8 @@ const crearUsuario = async (datosUsuario, datosVehiculo) => {
     throw new Error('Error al registrar usuario: ' + error.message);
   }
 };
+
+
 
 const verificarExistencia = async (modelo, campo, valor) => {
   try {
@@ -89,8 +91,7 @@ const buscarUsuarioPorCorreo = async (correo) => {
         model: Rol,
         as: 'Rol',
         attributes: ['nombre']
-      },
-      ]
+      }]
     });
   } catch (error) {
     console.error('Error en buscarUsuarioPorCorreo:', error);

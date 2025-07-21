@@ -68,7 +68,11 @@ const Vehiculo = sequelize.define('Vehiculo', {
       }
     }
   },
-  foto_vehiculo: { 
+  fotoCarro: { 
+    type: DataTypes.STRING(255), 
+    allowNull: true 
+  },
+  fotoRevision: { 
     type: DataTypes.STRING(255), 
     allowNull: true 
   }

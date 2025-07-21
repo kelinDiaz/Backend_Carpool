@@ -12,7 +12,7 @@ const ensureUploadsDir = () => {
       console.log(` Directorio de uploads creado: ${basePath}`);
     }
 
-    const subdirs = ['perfiles', 'carnets', 'licencias', 'vehiculos'];
+    const subdirs = ['perfiles', 'carnets', 'licencia_conducir', 'vehiculos', 'fotoRevision'];
     subdirs.forEach(dir => {
       const dirPath = path.join(basePath, dir);
       if (!fs.existsSync(dirPath)) {
@@ -32,8 +32,9 @@ const uploadsBasePath = ensureUploadsDir();
 const FIELD_MAPPINGS = {
   fotoPerfil: 'perfiles',
   fotoCarnet: 'carnets',
-  licencia: 'licencias',
-  fotoCarro: 'vehiculos'
+  licencia_conducir: 'licencia_conducir',
+  fotoCarro: 'vehiculos',
+  fotoRevision: 'fotoRevision'
 };
 
 const storage = multer.diskStorage({
@@ -73,15 +74,16 @@ const upload = multer({
   fileFilter,
   limits: {
     fileSize: 2 * 1024 * 1024,
-    files: 4 
+    files: 5
   }
 });
 
 const usuarioUpload = upload.fields([
   { name: 'fotoPerfil', maxCount: 1 },
   { name: 'fotoCarnet', maxCount: 1 },
-  { name: 'licencia', maxCount: 1 },
-  { name: 'fotoCarro', maxCount: 1 }
+  { name: 'licencia_conducir', maxCount: 1 },
+  { name: 'fotoCarro', maxCount: 1 },
+  { name: 'fotoRevision', maxCount: 1 }
 ]);
 
 const uploadFotoPerfil = upload.single('fotoPerfil');

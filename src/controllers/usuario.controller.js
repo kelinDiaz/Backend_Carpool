@@ -24,10 +24,15 @@ const registrarUsuario = async (req, res) => {
       nombre, apellido, dni, correo, contrasena, role_id, telefono, campus_id, vehiculo
     } = req.body;
 
-    const { 
-      fotoPerfil = [], fotoCarnet = [], licencia = [], fotoCarro = [] 
-    } = req.files || {};
 
+     const files = req.files || {};
+
+  
+    const fotoPerfil = files.fotoPerfil || [];
+    const fotoCarnet = files.fotoCarnet || [];
+    const licencia_conducir = files.licencia_conducir || [];
+    const fotoCarro = files.fotoCarro || [];
+    const fotoRevision = files.fotoRevision || [];
     const errores = {};
 
     if (!nombre) errores.nombre = 'Nombre es requerido';
@@ -36,9 +41,11 @@ const registrarUsuario = async (req, res) => {
     if (!correo) errores.correo = 'Correo es requerido';
     if (!contrasena) errores.contrasena = 'Contraseña es requerida';
     if (!telefono) errores.telefono = 'Teléfono es requerido';
+    
 
-    if (role_id == 2) {
-      if (!licencia.length) errores.licencia = 'Licencia requerida';
+    if (Number(role_id )== 2) {
+      if (!licencia_conducir.length) errores.licencia_conducir = 'Licencia requerida';
+      if(!fotoRevision.length) errores.fotoRevision = 'foto de revision requerida';
       if (!fotoCarro.length) errores.fotoCarro = 'Foto de vehículo requerida';
       if (!vehiculo) errores.vehiculo = 'Datos de vehículo requeridos';
     }
@@ -91,15 +98,17 @@ const registrarUsuario = async (req, res) => {
       campus_id,
       fotoPerfil: fotoPerfil[0]?.path || null,
       fotoCarnet: fotoCarnet[0]?.path || null,
-      licencia_path: licencia[0]?.path || null
+      
     };
 
-    const vehiculoDataForService = role_id == 2 ? {
+    const vehiculoDataForService = Number(role_id) === 2 ? {
       marca: vehiculoData.marca,
       modelo: vehiculoData.modelo,
       color: vehiculoData.color,
       placa: vehiculoData.placa,
-      foto_vehiculo: fotoCarro[0]?.path || null
+      fotoCarro: fotoCarro[0]?.path || null,
+      licencia_conducir: licencia_conducir[0]?.path || null,
+      fotoRevision: fotoRevision[0]?.path || null
     } : null;
 
     const nuevoUsuario = await usuarioService.crearUsuario(usuarioData, vehiculoDataForService);
