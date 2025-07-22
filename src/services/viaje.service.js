@@ -144,4 +144,9 @@ const listarViajesDisponibles = async () => {
 
 
 
+
+
+
+
+
 module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles };

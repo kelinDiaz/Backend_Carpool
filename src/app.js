@@ -21,6 +21,10 @@ const campusRoutes = require('./routes/campus.routes');
 
 const rutaRoutes = require('./routes/ruta.routes');
 
+const ViajePasajeroRoutes = require('./routes/viajePasajero.routes');
+
+const reservaRoutes = require('./routes/reserva.routes');
+
 
 
 
@@ -36,6 +40,10 @@ app.use('/api/viajes', viajeRoutes);
 app.use('/api/campus', campusRoutes);
 
 app.use('/api/ruta', rutaRoutes);
+
+app.use('/api/viajePasajero', ViajePasajeroRoutes);
+
+app.use('/api/reservas', reservaRoutes);
 
 
 
