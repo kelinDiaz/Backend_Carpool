@@ -19,15 +19,7 @@ const getViaje = async (req, res) => {
       return res.status(404).json({ error: 'Viaje no encontrado' });
     }
 
-    res.json({
-      origen: viaje.origen,
-      destino: viaje.destino,
-      hora_salida: viaje.hora_salida,
-      asientos: viaje.asientos_disponibles,
-      precio: viaje.precio_asiento,
-      descripcion: viaje.descripcion,
-      estado: viaje.estado
-    });
+    res.json({ viaje });
 
   } catch (error) {
     console.error('Error en controlador getViaje:', error);
@@ -35,8 +27,19 @@ const getViaje = async (req, res) => {
   }
 };
 
+const obtenerViajeActivo = async (req, res) => {
+  const conductorId = req.params.conductor_id;
+  try {
+    const viajeActivo = await viajeService.getViajeActivo(conductorId);
+    res.json({ viaje: viajeActivo || null });
+  } catch (error) {
+    console.error('Error al obtener viaje activo:', error);
+    res.status(500).json({ error: 'Error al obtener viaje activo' });
+  }
+};
+
 const finalizarViaje = async (req, res) => {
-  const { id } = req.params; // 
+  const { id } = req.params;  
 
   try {
     const viajeFinalizado = await viajeService.finalizarViaje(id);
@@ -46,10 +49,6 @@ const finalizarViaje = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-
-
-
 
 
 const listarViajesDisponible = async (req, res) => {
@@ -68,6 +67,4 @@ const listarViajesDisponible = async (req, res) => {
 };
 
 
-
-
-module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible};
+module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible, obtenerViajeActivo};

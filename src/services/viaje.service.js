@@ -18,6 +18,17 @@ const crearViaje = async ({
   descripcion,
   conductor_id
 }) => {
+
+  const viajeActivo = await Viaje.findOne({
+    where: {
+      conductor_id,
+      estado: 'activo'
+    }
+  });
+
+  if (viajeActivo) {
+    throw new Error('Este conductor ya tiene un viaje activo.');
+  }
   
   const ruta = await Ruta.findOne({ where: { usuario_id: conductor_id } });
   if (!ruta) throw new Error('Ruta del conductor no encontrada');
@@ -85,6 +96,16 @@ const getViaje = async (id) => {
   }
 };
 
+const getViajeActivo = async (conductor_id) => {
+  return await Viaje.findOne({
+    where: {
+      conductor_id,
+      estado: 'activo'
+    }
+  });
+};
+
+
 const finalizarViaje = async (viajeId) => {
   const viaje = await Viaje.findByPk(viajeId);
   if (!viaje) {
@@ -143,10 +164,4 @@ const listarViajesDisponibles = async () => {
 };
 
 
-
-
-
-
-
-
-module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles };
+module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles, getViajeActivo };

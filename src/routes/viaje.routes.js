@@ -10,13 +10,11 @@ const viajeController = require('../controllers/viaje.controller');
 
 router.post('/', viajeController.crearViaje);
 
-
 router.put('/finalizar/:id', viajeController.finalizarViaje);
-
 
 router.get('/disponibles', viajeController.listarViajesDisponible);
 
-
+router.get('/activo/:conductor_id', viajeController.obtenerViajeActivo);
 
 router.get('/:id', viajeController.getViaje);
 
