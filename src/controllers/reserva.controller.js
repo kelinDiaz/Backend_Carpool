@@ -73,9 +73,34 @@ const listarReservasPasajero = async (req, res) => {
   }
 };
 
+
+
+
+
+const obtenerPasajerosPorViaje = async (req, res) => {
+  try {
+    const viajeId = req.params.viajeId;
+    const pasajeros = await reservaService.obtenerPasajerosPorViaje(viajeId);
+
+    if (!pasajeros || pasajeros.length === 0) {
+      return res.status(404).json({ mensaje: 'No se encontraron pasajeros para este viaje' });
+    }
+
+    res.status(200).json({
+      mensaje: 'Pasajeros obtenidos correctamente',
+      pasajeros
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensaje: 'Error al obtener pasajeros del viaje',
+      error: error.message
+    });
+  }
+};
 module.exports = {
   solicitarReserva,
   responderReserva,
   listarReservasConductor,
-  listarReservasPasajero
+  listarReservasPasajero, 
+  obtenerPasajerosPorViaje
 };
