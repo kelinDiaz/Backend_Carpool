@@ -26,19 +26,29 @@ const solicitarReserva = async (req, res) => {
 
 
 
+
+
 const responderReserva = async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const { estado } = req.body;
 
     if (!['aceptada', 'rechazada'].includes(estado)) {
-      return res.status(400).json({ error: 'Estado inválido. Debe ser "aceptada" o "rechazada".' });
+      return res.status(400).json({ error: 'Estado inválido. Debe ser "aceptada" o "rechazada"' });
     }
 
-    const reserva = await reservaService.responderReserva(id, estado);
-    res.status(200).json({ mensaje: `Reserva ${estado}`, reserva });
+    const reservaActualizada = await reservaService.responderReserva(id, estado);
+    
+    return res.status(200).json({
+      mensaje: `Reserva ${estado} correctamente`,
+      reserva: reservaActualizada
+    });
+
   } catch (error) {
-    res.status(500).json({ error: 'Error al responder reserva', detalle: error.message });
+    return res.status(500).json({
+      error: 'Error al procesar la respuesta de la reserva',
+      detalle: error.message
+    });
   }
 };
 

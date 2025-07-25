@@ -7,7 +7,8 @@ const Usuario = require('./usuario.model');
 const Vehiculo = require('./vehiculo.model');
 const Ruta = require('./ruta.model')
 const Viaje = require('./viaje.model');
-const Reserva = require('./reserva.model')
+const Reserva = require('./reserva.model');
+const ViajePasajero = require('./viaje_pasajero.model');
 
 
 Usuario.belongsTo(Rol, { foreignKey: 'role_id' });
@@ -38,6 +39,19 @@ Reserva.belongsTo(Viaje, { foreignKey: 'viaje_id' });
 Usuario.hasMany(Reserva, { foreignKey: 'pasajero_id' });
 Viaje.hasMany(Reserva, { foreignKey: 'viaje_id' });
 
+
+Viaje.belongsToMany(Usuario, {
+  through: ViajePasajero,
+  foreignKey: 'viaje_id',
+  otherKey: 'pasajero_id'
+});
+
+Usuario.belongsToMany(Viaje, {
+  through: ViajePasajero,
+  foreignKey: 'pasajero_id',
+  otherKey: 'viaje_id'
+});
+
 module.exports = {
   sequelize, 
   Rol,
@@ -46,7 +60,8 @@ module.exports = {
   Vehiculo,
   Ruta,
   Viaje,
-  Reserva
+  Reserva, 
+  ViajePasajero
 
 
 };
