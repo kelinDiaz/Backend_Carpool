@@ -2,7 +2,7 @@
 
 const reservaService = require('../services/reserva.service');
 
-
+const {getIO} = require('../sockets/socket');
 
 
 const solicitarReserva = async (req, res) => {
@@ -32,6 +32,7 @@ const responderReserva = async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
+    const io = getIO();
 
     if (!['aceptada', 'rechazada'].includes(estado)) {
       return res.status(400).json({ error: 'Estado inválido. Debe ser "aceptada" o "rechazada"' });

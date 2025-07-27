@@ -42,7 +42,7 @@ const procesarAceptacion = async (reserva) => {
 
 
 
-const responderReserva = async (id, estado) => {
+const responderReserva = async (id, estado, io) => {
   const reserva = await Reserva.findByPk(id);
   if (!reserva) throw new Error('Reserva no encontrada');
 
@@ -52,6 +52,17 @@ const responderReserva = async (id, estado) => {
 
   reserva.estado = estado;
   await reserva.save();
+
+
+   if (io) {
+    io.to(`user-${reserva.pasajero_id}`).emit('reservaRespondida', {
+      mensaje: `Tu solicitud ha sido ${estado}`,
+      estado,
+      viajeId: reserva.viaje_id
+    });
+  }
+
+  
   return reserva;
 };
 
