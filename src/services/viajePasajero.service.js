@@ -1,6 +1,7 @@
 
 
 const { Viaje, Usuario, Vehiculo } = require('../models');
+const { Op } = require('sequelize');
 
 const obtenerDetalleViajeParaPasajero = async (idViaje) => {
   
@@ -30,6 +31,56 @@ const obtenerDetalleViajeParaPasajero = async (idViaje) => {
 };
 
 
+const buscarViajesPorDestino = async (termino) => {
+  try {
+    const viajes = await Viaje.findAll({
+      where: {
+        destino: {
+          [Op.like]: `%${termino}%`
+        },
+        estado: 'activo',
+        asientos_disponibles: { [Op.gt]: 0 }
+      },
+      attributes: [
+        'id',
+        'origen',
+        'destino',
+        'hora_salida',
+        'asientos_disponibles',
+        'precio_asiento',
+        'descripcion'
+      ],
+      include: [
+        {
+          model: Usuario,
+          attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+        }
+      ]
+    });
+
+    return viajes.map(viaje => ({
+      id: viaje.id,
+      origen: viaje.origen,
+      destino: viaje.destino,
+      hora_salida: viaje.hora_salida,
+      asientos_disponibles: viaje.asientos_disponibles,
+      precio_asiento: viaje.precio_asiento,
+      descripcion: viaje.descripcion,
+      conductor: {
+        id: viaje.Usuario.id,
+        nombre: `${viaje.Usuario.nombre} ${viaje.Usuario.apellido}`,
+        fotoPerfil: viaje.Usuario.fotoPerfil
+      }
+    }));
+  } catch (error) {
+    console.error('Error al buscar viajes por destino:', error);
+    throw error;
+  }
+};
+
+
+
 module.exports = {
-  obtenerDetalleViajeParaPasajero
+  obtenerDetalleViajeParaPasajero, 
+  buscarViajesPorDestino
 };
