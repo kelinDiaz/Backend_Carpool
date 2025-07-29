@@ -27,7 +27,7 @@ COPY . .
 RUN rm -f .env
 
 # Expone el puerto de la app
-EXPOSE 30
+EXPOSE 8000
 
 # Comando para ejecutar la app
 CMD ["node", "src/index.js"]
