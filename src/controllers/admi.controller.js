@@ -134,6 +134,38 @@ const VerHistorialReserva = async (req, res) =>{
 
 };
 
+const eliminarPasajero = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const eliminado = await admiService.eliminarPasajero(id);
+
+        if (!eliminado) {
+            return response.error(res, 404, 'Pasajero no encontrado o ya eliminado');
+        }
+
+        return response.success(res, 200, 'Pasajero eliminado correctamente', eliminado);
+    } catch (error) {
+        return response.error(res, 400, 'Error al eliminar pasajero', error);
+    }
+};
+
+const eliminarViaje = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const eliminado = await admiService.eliminarViaje(id);
+
+        if (!eliminado) {
+            return response.error(res, 404, 'Viaje no encontrado o ya eliminado');
+        }
+
+        return response.success(res, 200, 'Viaje eliminado correctamente', eliminado);
+    } catch (error) {
+        return response.error(res, 400, 'Error al eliminar viaje', error);
+    }
+};
+
 
 module.exports ={
 
@@ -142,5 +174,8 @@ module.exports ={
     verInfoConductor,
     verInfoPasajero,
     VerHistorialViaje,
-    VerHistorialReserva
+    VerHistorialReserva,
+    eliminarPasajero,
+    eliminarViaje
+
 }

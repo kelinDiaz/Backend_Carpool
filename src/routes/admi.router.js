@@ -22,7 +22,8 @@ router.get('/reserva', admiController.VerHistorialReserva);
 router.post('/conductor/:id', admiController.verInfoConductor);
 router.post('/pasajero/:id', admiController.verInfoPasajero);
 
-
+router.delete('/pasajero/:id', admiController.eliminarPasajero);
+router.delete('/viajes/:id', admiController.eliminarViaje);
 
 
 

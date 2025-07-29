@@ -159,6 +159,35 @@ const verReserva =  async =>{
     }
 };
 
+const eliminarPasajero = async (id) => {
+    try {
+        const pasajero = await db.Pasajero.findByPk(id);
+        if (!pasajero) return null;
+
+        await pasajero.destroy();
+        return pasajero;
+    } catch (error) {
+        console.error('Error al eliminar pasajero:', error);
+        throw error;
+    }
+};
+
+const eliminarViaje = async (id) => {
+    try {
+        const viaje = await viaje.findByPk(id); 
+
+        if (!viaje) {
+            return null;
+        }
+
+        await viaje.destroy();
+        return viaje;
+
+    } catch (error) {
+        console.error('Error al eliminar viaje:', error);
+        throw error;
+    }
+};
 
 module.exports = {
     verTodoConductores,
@@ -166,6 +195,9 @@ module.exports = {
     verInfoConductor,
     verInfoPasajero,
     verHistorialViajes,
-    verReserva
+    verReserva,
+    eliminarPasajero,
+    eliminarViaje
+
 
 }
