@@ -3,7 +3,7 @@
 
 
 
-const { Viaje, Usuario, sequelize } = require('../models');
+const { Viaje, Usuario, Reserva,sequelize } = require('../models');
 
 const Ruta = require('../models/ruta.model'); 
 
@@ -114,6 +114,31 @@ const finalizarViaje = async (viajeId) => {
 
   viaje.estado = 'finalizado';
   await viaje.save();
+
+await Reserva.update(
+    { estado: 'finalizada' },
+    {
+      where: {
+        viaje_id: viajeId,
+        estado: 'aceptada'
+      }
+    }
+  );
+
+  const reservas = await Reserva.findAll({
+    where:{
+      viaje_id: viajeId,
+      estado:'finalizada'
+    }
+  });
+
+    reservas.forEach(reserva => {
+    io.to(`user-${reserva.pasajero_id}`).emit('viajeFinalizado', {
+      mensaje: 'Su viaje ha finalizado. ¡Gracias por viajar con nosotros!',
+      viajeId: viajeId
+    });
+  });
+
 
   return viaje;
 };

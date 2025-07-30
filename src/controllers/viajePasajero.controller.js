@@ -36,7 +36,27 @@ const buscarViajesPorDestino = async (req, res) => {
   }
 };
 
+
+
+const obtenerViajeDePasajero = async (req, res) => {
+  try {
+    const { pasajero_id } = req.params;
+
+    const viaje = await viajePasajeroService.obtenerViajeAceptadoPorPasajero(pasajero_id);
+
+    if (!viaje) {
+      return res.status(404).json({ mensaje: 'No tienes un viaje aceptado actualmente' });
+    }
+
+    res.json(viaje);
+  } catch (error) {
+    console.error('Error al obtener viaje del pasajero:', error);
+    res.status(500).json({ error: 'Error interno al obtener el viaje' });
+  }
+};
+
 module.exports = {
   getViajeDetallePasajero, 
-  buscarViajesPorDestino
+  buscarViajesPorDestino,
+  obtenerViajeDePasajero
 };

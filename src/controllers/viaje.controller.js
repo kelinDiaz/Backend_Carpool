@@ -1,6 +1,6 @@
 
 const viajeService = require('../services/viaje.service');
-
+const {getIO} = require('../sockets/socket');
 const crearViaje = async (req, res) => {
   try {
     const viaje = await viajeService.crearViaje(req.body);
@@ -39,7 +39,8 @@ const obtenerViajeActivo = async (req, res) => {
 };
 
 const finalizarViaje = async (req, res) => {
-  const { id } = req.params;  
+  const { id } = req.params;
+  const io = getIO();  
 
   try {
     const viajeFinalizado = await viajeService.finalizarViaje(id);

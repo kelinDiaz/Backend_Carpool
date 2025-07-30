@@ -1,6 +1,6 @@
 
 
-const { Viaje, Usuario, Vehiculo } = require('../models');
+const { Viaje, Usuario, Vehiculo,Reserva  } = require('../models');
 const { Op } = require('sequelize');
 
 const obtenerDetalleViajeParaPasajero = async (idViaje) => {
@@ -78,9 +78,49 @@ const buscarViajesPorDestino = async (termino) => {
   }
 };
 
+//Obtiene el viaje en curso del viaje, el viaje que ha sido aceptado
+const obtenerViajeAceptadoPorPasajero = async (pasajeroId) => {
+  const reservaAceptada = await Reserva.findOne({
+    where: {
+      pasajero_id: pasajeroId,
+      estado: 'aceptada'
+    }
+  });
+
+  if (!reservaAceptada) return null;
+
+  const viaje = await Viaje.findByPk(reservaAceptada.viaje_id, {
+    attributes: [
+      'id',
+      'origen',
+      'destino',
+      'hora_salida',
+      'asientos_disponibles',
+      'precio_asiento',
+      'descripcion'
+      
+    ],
+    include: [
+      {
+        model: Usuario,
+        attributes: ['id', 'nombre', 'apellido', 'fotoPerfil', 'telefono'],
+        include: [
+          {
+            model: Vehiculo,
+            attributes: ['marca', 'modelo', 'placa', 'color']
+          }
+        ]
+      }
+    ]
+  });
+
+  return viaje;
+};
+
 
 
 module.exports = {
   obtenerDetalleViajeParaPasajero, 
-  buscarViajesPorDestino
+  buscarViajesPorDestino,
+  obtenerViajeAceptadoPorPasajero
 };
