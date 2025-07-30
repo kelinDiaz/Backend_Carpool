@@ -11,7 +11,7 @@ function initSocket(server) {
   });
 
   io.on('connection', (socket) => {
-    console.log('🔌 Nuevo cliente conectado');
+    console.log(' Nuevo cliente conectado');
 
     socket.on('joinUser', (usuarioId) => {
       console.log(` Usuario ${usuarioId} se unió a su room`);
