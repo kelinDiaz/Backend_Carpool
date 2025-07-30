@@ -11,7 +11,8 @@ require('./models/campusUniversitario.model');
 require('./models/usuario.model');
 require('./models/vehiculo.model');
 require('./models/ruta.model');
-require ('./models/viaje.model')
+require ('./models/viaje.model');
+require('./models/rol.model')
 
 const PORT = process.env.PORT || 3000;
 

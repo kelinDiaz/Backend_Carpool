@@ -27,6 +27,8 @@ const reservaRoutes = require('./routes/reserva.routes');
 
 const administradorRoutes = require('./routes/admi.router');
 
+const roles = require('./routes/rol.router');
+
 
 
 
@@ -49,6 +51,8 @@ app.use('/api/reservas', reservaRoutes);
 
 
 app.use('/api/administrador', administradorRoutes);
+
+app.use('/api/roles', roles);
 
 
 

@@ -18,4 +18,6 @@ router.get('/activo/:conductor_id', viajeController.obtenerViajeActivo);
 
 router.get('/:id', viajeController.getViaje);
 
+router.get('/conductor/finalizados/:conductor_id/', viajeController.getMisViajes);
+
 module.exports = router;

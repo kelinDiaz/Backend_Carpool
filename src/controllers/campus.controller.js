@@ -10,6 +10,22 @@ const getTodosLosCampus = async (req, res) => {
   }
 };
 
+
+
+async function crearCampusController(req, res) {
+  try {
+    const data = req.body;
+    if (!data.nombre || !data.direccion) {
+      return res.status(400).json({ error: 'Faltan datos obligatorios' });
+    }
+
+    const campusCreado = await campusService.crearCampus(data);
+    res.status(201).json(campusCreado);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear campus', details: error.message });
+  }
+}
+
 module.exports = {
-  getTodosLosCampus
+  getTodosLosCampus, crearCampusController
 };

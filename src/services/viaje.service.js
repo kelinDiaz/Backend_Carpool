@@ -189,4 +189,55 @@ const listarViajesDisponibles = async () => {
 };
 
 
-module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles, getViajeActivo };
+//obtener todos los viajes pasados(finalizados)
+
+const GetMisViajes = async (conductor_id) => {
+  try {
+    const viajes = await Viaje.findAll({
+      where: {
+        conductor_id,
+        estado: 'finalizado'
+      },
+      attributes: [
+        'id',
+        'origen',
+        'destino',
+        'hora_salida',
+        'asientos_disponibles',
+        'precio_asiento',
+        'descripcion',
+        'estado'
+      ],
+      include: [
+        {
+          model: Usuario,
+          attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+        }
+      ],
+      order: [['hora_salida', 'DESC']] // Opcional: ordenar por fecha/hora de salida descendente
+    });
+
+    return viajes.map(viaje => ({
+      id: viaje.id,
+      origen: viaje.origen,
+      destino: viaje.destino,
+      hora_salida: viaje.hora_salida,
+      asientos_disponibles: viaje.asientos_disponibles,
+      precio_asiento: viaje.precio_asiento,
+      descripcion: viaje.descripcion,
+      estado: viaje.estado,
+      conductor: {
+        id: viaje.Usuario.id,
+        nombre: `${viaje.Usuario.nombre} ${viaje.Usuario.apellido}`,
+        fotoPerfil: viaje.Usuario.fotoPerfil
+      }
+    }));
+  } catch (error) {
+    console.error('Error al listar viajes finalizados del conductor:', error);
+    throw error;
+  }
+};
+
+
+
+module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles, getViajeActivo, GetMisViajes };

@@ -68,4 +68,22 @@ const listarViajesDisponible = async (req, res) => {
 };
 
 
-module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible, obtenerViajeActivo};
+
+const getMisViajes = async (req, res) => {
+  try {
+    const { conductor_id } = req.params;
+
+    const viajes = await viajeService.GetMisViajes(conductor_id);
+
+    if (!viajes || viajes.length === 0) {
+      return res.status(404).json({ mensaje: 'No se encontraron viajes finalizados para este conductor' });
+    }
+
+    return res.status(200).json({ viajes });
+  } catch (error) {
+    console.error('Error en controlador de viajes finalizados:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible, obtenerViajeActivo, getMisViajes};
