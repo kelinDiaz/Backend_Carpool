@@ -2,6 +2,8 @@
 const http = require('http');
 const app = require('./app');
 const { sequelize} = require('./config/database');
+const { initSocket } = require('./sockets/socket');
+
 
 
 require('./models/rol.model');
