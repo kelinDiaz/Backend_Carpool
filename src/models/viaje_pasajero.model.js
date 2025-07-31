@@ -18,7 +18,8 @@ const ViajePasajero = sequelize.define('ViajePasajero', {
   fecha_reserva: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
-  }
+  },
+
 }, {
   tableName: 'viaje_pasajero',
   timestamps: false

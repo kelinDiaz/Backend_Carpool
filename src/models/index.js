@@ -9,6 +9,7 @@ const Ruta = require('./ruta.model')
 const Viaje = require('./viaje.model');
 const Reserva = require('./reserva.model');
 const ViajePasajero = require('./viaje_pasajero.model');
+const Calificacion = require('./calificacion.model')
 
 
 Usuario.belongsTo(Rol, { foreignKey: 'role_id' });
@@ -52,6 +53,22 @@ Usuario.belongsToMany(Viaje, {
   otherKey: 'viaje_id'
 });
 
+
+
+Viaje.hasMany(ViajePasajero, { foreignKey: 'viaje_id' });
+ViajePasajero.belongsTo(Viaje, { foreignKey: 'viaje_id' });
+
+ViajePasajero.belongsTo(Usuario, { foreignKey: 'pasajero_id' });
+Usuario.hasMany(ViajePasajero, { foreignKey: 'pasajero_id' });
+
+
+
+Calificacion.belongsTo(Viaje, { foreignKey: 'viaje_id' });
+Calificacion.belongsTo(Usuario, { as: 'calificador', foreignKey: 'calificador_id' });
+Calificacion.belongsTo(Usuario, { as: 'calificado', foreignKey: 'calificado_id' });
+
+
+
 module.exports = {
   sequelize, 
   Rol,
@@ -61,7 +78,8 @@ module.exports = {
   Ruta,
   Viaje,
   Reserva, 
-  ViajePasajero
+  ViajePasajero, 
+  Calificacion
 
 
 };

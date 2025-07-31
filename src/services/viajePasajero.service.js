@@ -1,6 +1,7 @@
 
 
-const { Viaje, Usuario, Vehiculo,Reserva  } = require('../models');
+const { getMisViajes } = require('../controllers/viaje.controller');
+const { Viaje, Usuario, Vehiculo,Reserva, ViajePasajero  } = require('../models');
 const { Op } = require('sequelize');
 
 const obtenerDetalleViajeParaPasajero = async (idViaje) => {
@@ -119,8 +120,35 @@ const obtenerViajeAceptadoPorPasajero = async (pasajeroId) => {
 
 
 
+
+const getMisViajesP = async (pasajeroId) => {
+  const viajes = await Viaje.findAll({
+    include: [
+      {
+        model: ViajePasajero,
+        where: { pasajero_id: pasajeroId },
+        attributes: [],
+      },
+      {
+        model: Usuario,
+        as: 'conductor',
+        attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+      }
+    ],
+    where: {
+      estado: 'finalizado'
+    },
+    order: [['hora_salida', 'DESC']]
+  });
+
+  return viajes;
+};
+
+
+
 module.exports = {
   obtenerDetalleViajeParaPasajero, 
   buscarViajesPorDestino,
-  obtenerViajeAceptadoPorPasajero
+  obtenerViajeAceptadoPorPasajero, 
+  getMisViajesP
 };

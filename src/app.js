@@ -30,6 +30,11 @@ const administradorRoutes = require('./routes/admi.router');
 const roles = require('./routes/rol.router');
 
 
+const CalificacionRoutes = require('./routes/calificacion.routes'); 
+
+
+
+
 
 
 app.use(cors());
@@ -53,6 +58,8 @@ app.use('/api/reservas', reservaRoutes);
 app.use('/api/administrador', administradorRoutes);
 
 app.use('/api/roles', roles);
+
+app.use('/api/calificacion', CalificacionRoutes);
 
 
 
