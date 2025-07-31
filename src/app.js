@@ -32,6 +32,8 @@ const roles = require('./routes/rol.router');
 
 const CalificacionRoutes = require('./routes/calificacion.routes'); 
 
+const ganaciasRoutes = require('./routes/ganancia.routes')
+
 
 
 
@@ -60,6 +62,10 @@ app.use('/api/administrador', administradorRoutes);
 app.use('/api/roles', roles);
 
 app.use('/api/calificacion', CalificacionRoutes);
+
+app.use('/api/ganancia', ganaciasRoutes);
+
+
 
 
 
