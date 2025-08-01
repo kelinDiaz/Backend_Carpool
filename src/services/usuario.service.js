@@ -173,7 +173,7 @@ const actualizarDatos = async (correo, actualizacion) => {
 
 const verFotoPerfil = async (id) => await cargarFoto(Usuario, 'fotoPerfil', id);
 const verFotoCarnet = async (id) => await cargarFoto(Usuario, 'fotoCarnet', id);
-const verFotoVehiculo = async (id) => await cargarFoto(Vehiculo, 'foto_vehiculo', id);
+
 
 
   const encriptarContra = async(contra) =>{
@@ -265,7 +265,6 @@ module.exports = {
   actualizarDatos,
   verFotoCarnet,
   verFotoPerfil,
-  verFotoVehiculo,
   cambiarContra,
   cambiarFotoPerfil,
   cambiarCarnet

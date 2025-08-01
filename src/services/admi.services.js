@@ -6,11 +6,12 @@ const Rol = require('../models/rol.model');
 const Viajes = require('../models/viaje.model');
 const Reserva = require('../models/reserva.model');
 const { response } = require('express');
+const ViajePasajero = require('../models/viaje_pasajero.model');
 
 const verTodoConductores = async () =>{
     try{
         const conductores = Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'correo','telefono'],
+      attributes: ['nombre', 'apellido', 'correo','telefono', 'id'],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -33,7 +34,7 @@ const verTodoConductores = async () =>{
 const verTodoPasajeros = async () =>{
     try{
         const pasajeros = Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'correo','telefono'],
+      attributes: ['nombre', 'apellido', 'correo','telefono' ,'id'],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -120,7 +121,7 @@ const verHistorialViajes = async =>{
             attributes: ['id', 'origen', 'destino', 'estado'],
             include: [{
                 model: Usuario,
-                attributes: ['nombre', 'correo', 'telefono']
+                attributes: ['nombre', 'correo', 'telefono', 'id']
             }]
         });
 
@@ -189,6 +190,51 @@ const eliminarViaje = async (id) => {
     }
 };
 
+const viajeDetalleConductor = async (id) =>{
+    try{
+        const viaje = await Viajes.findOne({
+      where: { id: id },
+      attributes: ['id', 'origen', 'destino', 'estado'],
+            include: [{
+                model: Usuario,
+                attributes: ['nombre', 'correo', 'telefono', 'id']
+            }]
+        });
+       
+         if(!viaje ||  viaje.length === 0){
+            return response.error(res, 400, 'No se encontro viaje');
+        }
+       return viaje;
+
+    }catch(error){
+         console.error(`No se encontro informacion`, error);
+        throw error;
+
+    };
+};
+
+const viajeDetalle = async (id) =>{
+    try{
+        const viaje = await ViajePasajero.findAll({
+      where: { viaje_id : id },
+            include: [{
+                model: Usuario,
+                attributes: ['nombre', 'correo', 'telefono', 'dni']
+            }]
+        });
+       
+         if(!viaje ||  viaje.length === 0){
+            return response.error(res, 400, 'No se encontro viaje');
+        }
+       return viaje;
+
+    }catch(error){
+         console.error(`No se encontro informacion`, error);
+        throw error;
+
+    };
+};
+
 module.exports = {
     verTodoConductores,
     verTodoPasajeros,
@@ -197,7 +243,9 @@ module.exports = {
     verHistorialViajes,
     verReserva,
     eliminarPasajero,
-    eliminarViaje
+    eliminarViaje,
+    viajeDetalleConductor,
+    viajeDetalle
 
 
 }
