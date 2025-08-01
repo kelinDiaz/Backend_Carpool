@@ -144,6 +144,7 @@ await Reserva.update(
 };
 
 
+
 const listarViajesDisponibles = async () => {
   try {
     const viajes = await Viaje.findAll({
@@ -162,7 +163,8 @@ const listarViajesDisponibles = async () => {
       ],
       include: [
         {
-          model: Usuario, 
+          model: Usuario,
+          as: 'conductor', // alias definido en las relaciones
           attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
         }
       ]
@@ -177,9 +179,9 @@ const listarViajesDisponibles = async () => {
       precio_asiento: viaje.precio_asiento,
       descripcion: viaje.descripcion,
       conductor: {
-        id: viaje.Usuario.id,
-        nombre: `${viaje.Usuario.nombre} ${viaje.Usuario.apellido}`,
-        fotoPerfil: viaje.Usuario.fotoPerfil
+        id: viaje.conductor.id,
+        nombre: `${viaje.conductor.nombre} ${viaje.conductor.apellido}`,
+        fotoPerfil: viaje.conductor.fotoPerfil
       }
     }));
   } catch (error) {
@@ -187,6 +189,7 @@ const listarViajesDisponibles = async () => {
     throw error;
   }
 };
+
 
 
 //obtener todos los viajes pasados(finalizados)
