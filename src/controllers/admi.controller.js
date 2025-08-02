@@ -5,7 +5,7 @@ const response = {
     return res.status(status).json({
       success: true,
       message,
-      ...data
+      data
     });
   },
   error: (res, status, message, errors = {}) => {

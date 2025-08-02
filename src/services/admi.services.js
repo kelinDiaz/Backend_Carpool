@@ -11,7 +11,7 @@ const ViajePasajero = require('../models/viaje_pasajero.model');
 const verTodoConductores = async () =>{
     try{
         const conductores = Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'correo','telefono', 'id'],
+      attributes: ['nombre', 'apellido', 'correo','telefono', 'id' , 'dni' ],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -34,7 +34,7 @@ const verTodoConductores = async () =>{
 const verTodoPasajeros = async () =>{
     try{
         const pasajeros = Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'correo','telefono' ,'id'],
+      attributes: ['nombre', 'apellido', 'correo','telefono' ,'id' , 'dni' ],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -59,8 +59,8 @@ const verTodoPasajeros = async () =>{
 const verInfoConductor = async (id) =>{
     try{
         const conductor = await Usuario.findOne({
-      where: {  id },
-      attributes: [ 'nombre', 'apellido', 'correo', 'telefono'],
+      where: {  id : id },
+      attributes: [ 'nombre', 'apellido', 'correo', 'telefono' , 'id' , 'dni' ],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -92,8 +92,8 @@ const verInfoConductor = async (id) =>{
 const verInfoPasajero = async (id) =>{
     try{
         const pasajero = await Usuario.findOne({
-      where: {  id },
-      attributes: [ 'nombre', 'apellido', 'correo', 'telefono'],
+      where: {  id : id },
+      attributes: ['id', 'nombre', 'apellido', 'correo', 'telefono', 'dni' ],
       include: [{
         model: Rol,
         as: 'Rol',
