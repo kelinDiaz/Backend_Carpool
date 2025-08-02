@@ -144,7 +144,6 @@ await Reserva.update(
 };
 
 
-
 const listarViajesDisponibles = async () => {
   try {
     const viajes = await Viaje.findAll({
@@ -170,6 +169,8 @@ const listarViajesDisponibles = async () => {
       ]
     });
 
+
+  
     return viajes.map(viaje => ({
       id: viaje.id,
       origen: viaje.origen,

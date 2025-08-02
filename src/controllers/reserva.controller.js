@@ -19,7 +19,7 @@ const solicitarReserva = async (req, res) => {
     const conductorId = viaje.conductor_id;
 
     const pasajero = await reservaService.obtenerUsuarioPorId(pasajero_id); 
-    io.to(`usuario-${conductorId}`).emit('nuevaSolicitud', {
+    /*io.to(`usuario-${conductorId}`).emit('nuevaSolicitud', {
       mensaje: 'Tienes una nueva solicitud de reserva',
       reservaId: reserva.id,
       pasajero: {
@@ -27,7 +27,7 @@ const solicitarReserva = async (req, res) => {
         nombre: pasajero.nombre,
         apellido: pasajero.apellido
       }
-    });
+    });*/
 
     res.status(201).json({ mensaje: 'Reserva solicitada correctamente', reserva });
   } catch (error) {
