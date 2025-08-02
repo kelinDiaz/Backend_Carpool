@@ -7,7 +7,8 @@ docker run -d -p 3000:3000 --name loop-container --env-file .env loop:latest
 
 #Inicar sesiones
 az login --use-device-code
-az acr login --name crloopdev 
+az acr login --name crloopdev docker rm -f loop-container
+
 
 #Crear tags a usar
 docker tag loop:latest crloopdev.azurecr.io/loop:latest

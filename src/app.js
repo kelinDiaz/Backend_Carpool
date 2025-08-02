@@ -73,7 +73,7 @@ app.use('/api/vehiculo', vehiculoRouter);
 
 
 
-app.use((err, req, res, next) => {
+app.use((err, res,) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Algo salió mal' });
 });
