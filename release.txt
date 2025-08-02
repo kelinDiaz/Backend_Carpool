@@ -12,8 +12,8 @@ az acr login --name crloopdev docker rm -f loop-container
 
 #Crear tags a usar
 docker tag loop:latest crloopdev.azurecr.io/loop:latest
-docker tag loop:latest crloopdev.azurecr.io/loop:0.2.0 #Cada nueva actualizacion aumentar el numero de en medio, arreglo de bugs el tercero, version a publicar el primero 
+docker tag loop:latest crloopdev.azurecr.io/loop:0.3.0 #Cada nueva actualizacion aumentar el numero de en medio, arreglo de bugs el tercero, version a publicar el primero 
 
 #Hacer push al contenedor
 docker push crloopdev.azurecr.io/loop:latest
-docker push crloopdev.azurecr.io/loop:0.2.0
+docker push crloopdev.azurecr.io/loop:0.3.0

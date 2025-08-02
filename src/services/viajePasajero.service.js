@@ -108,7 +108,7 @@ const obtenerViajeAceptadoPorPasajero = async (pasajeroId) => {
     include: [
       {
         model: Usuario,
-        as: 'conductor',
+      
         attributes: ['id', 'nombre', 'apellido', 'fotoPerfil', 'telefono'],
         include: [
           {
