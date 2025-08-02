@@ -132,12 +132,12 @@ await Reserva.update(
     }
   });
 
-    reservas.forEach(reserva => {
+   /* reservas.forEach(reserva => {
     io.to(`user-${reserva.pasajero_id}`).emit('viajeFinalizado', {
       mensaje: 'Su viaje ha finalizado. ¡Gracias por viajar con nosotros!',
       viajeId: viajeId
     });
-  });
+  });*/
 
 
   return viaje;
