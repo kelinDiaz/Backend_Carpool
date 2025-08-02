@@ -4,6 +4,7 @@ const { getMisViajes } = require('../controllers/viaje.controller');
 const { Viaje, Usuario, Vehiculo,Reserva, ViajePasajero  } = require('../models');
 const { Op } = require('sequelize');
 
+
 const obtenerDetalleViajeParaPasajero = async (idViaje) => {
   
     try {
@@ -11,10 +12,12 @@ const obtenerDetalleViajeParaPasajero = async (idViaje) => {
       include: [
         {
           model: Usuario,
+          as: 'conductor', 
           attributes: ['id', 'nombre', 'apellido', 'fotoPerfil', 'telefono'],
           include: [
             {
               model: Vehiculo,
+          
               attributes: ['marca', 'modelo', 'placa', 'color']
             }
           ]
@@ -54,6 +57,7 @@ const buscarViajesPorDestino = async (termino) => {
       include: [
         {
           model: Usuario,
+          as: 'conductor', // alias definido en las relaciones
           attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
         }
       ]
@@ -104,6 +108,7 @@ const obtenerViajeAceptadoPorPasajero = async (pasajeroId) => {
     include: [
       {
         model: Usuario,
+        as: 'conductor',
         attributes: ['id', 'nombre', 'apellido', 'fotoPerfil', 'telefono'],
         include: [
           {

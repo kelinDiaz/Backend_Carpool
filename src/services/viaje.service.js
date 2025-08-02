@@ -214,6 +214,7 @@ const GetMisViajes = async (conductor_id) => {
       include: [
         {
           model: Usuario,
+          as: 'conductor', // alias definido en las relaciones
           attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
         }
       ],
