@@ -24,6 +24,7 @@ const VerConductores = async (req, res) =>{
             if (!resultado){
                 return response.error(res, 400, 'No se encontro conductores');
             }
+            
             return response.success(res, 200, 'Conductores encontrados', resultado);
 
 
@@ -166,6 +167,49 @@ const eliminarViaje = async (req, res) => {
     }
 };
 
+const viajeDetalleConductor = async (req,res) =>{
+    const { id } = req.params;
+        try{
+            
+            const resultado = await admiService.viajeDetalleConductor(id);
+            
+             if (!resultado){
+                return response.error(res, 400, 'No hay  viaje con ese id');
+            }
+                const viajeLimpio = resultado.toJSON();
+            
+            return response.success(res, 200, 'viaje encontrado', viajeLimpio);
+
+
+        }catch(error){
+               res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+        }
+};
+const viajeDetalle = async (req,res) =>{
+    const { id } = req.params;
+        try{
+            
+            const resultado = await admiService.viajeDetalle(id);
+            
+             if (!resultado){
+                return response.error(res, 400, 'No hay  viaje con ese id');
+            }
+                
+            
+            return response.success(res, 200, 'viaje encontrado', resultado);
+
+
+        }catch(error){
+               res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+        }
+};
+
 
 module.exports ={
 
@@ -176,6 +220,8 @@ module.exports ={
     VerHistorialViaje,
     VerHistorialReserva,
     eliminarPasajero,
-    eliminarViaje
+    eliminarViaje,
+    viajeDetalleConductor,
+    viajeDetalle
 
 }

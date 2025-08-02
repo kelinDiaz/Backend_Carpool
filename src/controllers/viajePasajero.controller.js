@@ -55,8 +55,31 @@ const obtenerViajeDePasajero = async (req, res) => {
   }
 };
 
+
+
+
+const getMisViajesP = async (req, res) => {
+  try {
+    const { pasajero_id } = req.params;
+
+    const viajes = await viajePasajeroService.getMisViajesP(pasajero_id);
+
+    if (!viajes || viajes.length === 0) {
+      return res.status(404).json({ mensaje: 'No se encontraron viajes finalizados para este pasajero' });
+    }
+
+    return res.status(200).json({ viajes });
+  } catch (error) {
+    console.error('Error al obtener viajes finalizados del pasajero:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+
+
 module.exports = {
   getViajeDetallePasajero, 
   buscarViajesPorDestino,
-  obtenerViajeDePasajero
+  obtenerViajeDePasajero, 
+  getMisViajesP
 };

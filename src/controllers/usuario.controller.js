@@ -325,29 +325,7 @@ const checkPlaca = async (req, res) => {
         }
 };
 
- const cFotoVehiculo = async (req, res) => {
-        try {
-        const { id } = req.params;
 
-            const resultado = await usuarioService.verFotoVehiculo(id);
-            if(resultado){
-
-            const rutaRelativa = resultado.valor
-            .replace(/\\/g, '/')
-            .replace(/^.*uploads/, 'uploads');
-
-          const url = `${req.protocol}://${req.get('host')}/${rutaRelativa}`;
-              
-              return res.status(200).json({ available: true, url});
-            }else{
-              return res.status(400).json({ available: false, message: 'No se encontro una imagen' });
-            }
-
-        } catch (error) {
-          console.error('Error verificando placa:', error);
-          return res.status(500).json({ available: true, message: 'Error para obtener datos' });
-        }
-};
 
 const actualizarFotoPerfil = async (req, res) => {
               try {
@@ -417,7 +395,6 @@ module.exports = {
   actualizacion,
   cFotoCarnet,
   cFotoPerfil,
-  cFotoVehiculo,
   actualizacionContra,
   actualizarFotoPerfil,
   actualizarFotoCarnet

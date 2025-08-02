@@ -12,7 +12,9 @@ require('./models/usuario.model');
 require('./models/vehiculo.model');
 require('./models/ruta.model');
 require ('./models/viaje.model');
-require('./models/rol.model')
+require('./models/rol.model');
+require('./models/calificacion.model');
+require('./models/ganancia.model')
 
 const PORT = process.env.PORT || 3000;
 

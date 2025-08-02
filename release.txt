@@ -1,0 +1,18 @@
+#Crear imagen en docker
+docker buildx build --platform linux/amd64 -t loop:latest . --load
+
+#crear contenedor en docker
+#opcional
+docker run -d -p 3000:3000 --name loop-container --env-file .env loop:latest
+
+#Inicar sesiones
+az login --use-device-code
+az acr login --name crloopdev 
+
+#Crear tags a usar
+docker tag loop:latest crloopdev.azurecr.io/loop:latest
+docker tag loop:latest crloopdev.azurecr.io/loop:0.2.0 #Cada nueva actualizacion aumentar el numero de en medio, arreglo de bugs el tercero, version a publicar el primero 
+
+#Hacer push al contenedor
+docker push crloopdev.azurecr.io/loop:latest
+docker push crloopdev.azurecr.io/loop:0.2.0
