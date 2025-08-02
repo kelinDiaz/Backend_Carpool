@@ -15,6 +15,20 @@ const solicitarReserva = async (req, res) => {
 
     const reserva = await reservaService.crearReserva(pasajero_id, viaje_id, mensaje);
 
+    const viaje = await reservaService.obtenerViajePorId(viaje_id); 
+    const conductorId = viaje.conductor_id;
+
+    const pasajero = await reservaService.obtenerUsuarioPorId(pasajero_id); 
+    io.to(`usuario-${conductorId}`).emit('nuevaSolicitud', {
+      mensaje: 'Tienes una nueva solicitud de reserva',
+      reservaId: reserva.id,
+      pasajero: {
+        id: pasajero.id,
+        nombre: pasajero.nombre,
+        apellido: pasajero.apellido
+      }
+    });
+
     res.status(201).json({ mensaje: 'Reserva solicitada correctamente', reserva });
   } catch (error) {
     if (error.message.includes('Ya has enviado una solicitud')) {
@@ -23,9 +37,6 @@ const solicitarReserva = async (req, res) => {
     res.status(500).json({ error: 'Error al solicitar reserva', detalle: error.message });
   }
 };
-
-
-
 
 
 const responderReserva = async (req, res) => {
@@ -39,7 +50,15 @@ const responderReserva = async (req, res) => {
     }
 
     const reservaActualizada = await reservaService.responderReserva(id, estado);
-    
+
+    const pasajeroId = reservaActualizada.pasajero_id;
+    const viajeId = reservaActualizada.viaje_id;
+
+    io.to(`usuario-${pasajeroId}`).emit("reservaRespondida", {
+      estado,
+      viajeId
+    });
+
     return res.status(200).json({
       mensaje: `Reserva ${estado} correctamente`,
       reserva: reservaActualizada
@@ -52,6 +71,7 @@ const responderReserva = async (req, res) => {
     });
   }
 };
+
 
 
 const listarReservasConductor = async (req, res) => {
@@ -73,9 +93,6 @@ const listarReservasPasajero = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener reservas', detalle: error.message });
   }
 };
-
-
-
 
 
 const obtenerPasajerosPorViaje = async (req, res) => {

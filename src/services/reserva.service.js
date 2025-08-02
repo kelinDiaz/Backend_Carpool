@@ -92,11 +92,9 @@ const obtenerReservasPorPasajero = async (pasajeroId) => {
   });
 };
 
-//Obtener los pasajeros que se van uniendo al viaje activo de conductor, van en la vista de conductores
-
 const obtenerPasajerosPorViaje = async (viajeId) => {
   return await Reserva.findAll({
-    where: { viaje_id: viajeId, estado: 'aceptada' }, // solo pasajeros aceptados
+    where: { viaje_id: viajeId, estado: 'aceptada' }, 
     include: [{
       model: Usuario,
       attributes: ['id', 'nombre', 'apellido', 'fotoPerfil', 'telefono']
@@ -104,10 +102,23 @@ const obtenerPasajerosPorViaje = async (viajeId) => {
   });
 };
 
+const obtenerViajePorId = async (viajeId) => {
+  return await Viaje.findByPk(viajeId);
+};
+
+const obtenerUsuarioPorId = async (usuarioId) => {
+  return await Usuario.findByPk(usuarioId, {
+    attributes: ['id', 'nombre', 'apellido']
+  });
+};
+
+
 module.exports = {
   crearReserva,
   responderReserva,
   obtenerReservasPorConductor,
   obtenerReservasPorPasajero, 
-  obtenerPasajerosPorViaje
+  obtenerPasajerosPorViaje,
+  obtenerViajePorId,        
+  obtenerUsuarioPorId  
 };
