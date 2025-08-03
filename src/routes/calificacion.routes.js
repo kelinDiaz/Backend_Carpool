@@ -20,7 +20,7 @@ router.get('/usuario/:usuarioId/:tipo/promedio', controller.verPromedioUsuario);
 router.get('/:id', controller.obtenerCalificacionPorId);
 
 
-module.exports = router;3
+module.exports = router;
 
 
 
