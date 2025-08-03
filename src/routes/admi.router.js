@@ -25,11 +25,14 @@ router.post('/pasajero/:id', admiController.verInfoPasajero);
 router.post('/viajeDetalleConductor/:id', admiController.viajeDetalleConductor);
 router.post('/viajeDetalle/:id', admiController.viajeDetalle);
 router.post('/conductorAceptado/:id', admiController.aceptarConductorController);
+router.post('/pasajeroAceptado/:id', admiController.aceptarPasajeroController);
+router.post('/pasajeroSuspendido/:id', admiController.suspenderPasajeroController);
+router.post('/conductorSuspendido/:id', admiController.suspenderConductorController);
 router.post('/usuario/:id', admiController.aceptarUsuarioController);
 
-router.delete('/pasajero/:id', admiController.eliminarPasajero);
+router.post('/pasajero/inactivo/:id', admiController.eliminarPasajero);
 router.delete('/reserva/:id', admiController.eliminarViaje);
-router.delete('/conductor/:id', admiController.eliminarConductor);
+router.post('/conductor/inactivo/:id', admiController.eliminarConductor);
 
 
 

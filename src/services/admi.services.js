@@ -11,9 +11,9 @@ const ViajePasajero = require('../models/viaje_pasajero.model');
 const verTodoConductores = async () =>{
     try{
         const conductores = Usuario.findAll({
-      attributes: ['id' ,'nombre', 'apellido', 'correo','telefono',  'dni' ],
+      attributes: ['id' ,'nombre', 'apellido', 'correo','telefono',  'dni' , 'estado'],
        where : { estado: {
-          [Op.in]: ['activo', 'pendiente', 'suspendido'] 
+          [Op.in]: ['activo', 'pendiente', 'suspendido', 'aceptado'] 
         } },
       include: [{
         model: Rol,
@@ -37,9 +37,9 @@ const verTodoConductores = async () =>{
 const verTodoPasajeros = async () =>{
     try{
         const pasajeros = Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'correo','telefono' ,'id' , 'dni' ],
+      attributes: ['nombre', 'apellido', 'correo','telefono' ,'id' , 'dni' , 'estado' ],
       where : { estado: {
-          [Op.in]: ['activo', 'pendiente', 'suspendido'] 
+          [Op.in]: ['activo', 'pendiente', 'suspendido', 'aceptado'] 
         } },
       include: [{
         model: Rol,
@@ -66,7 +66,7 @@ const verInfoConductor = async (id) =>{
     try{
         const conductor = await Usuario.findOne({
       where: {  id : id },
-      attributes: [ 'nombre', 'apellido', 'correo', 'telefono' , 'id' , 'dni' ],
+      attributes: [ 'nombre', 'apellido', 'correo', 'telefono' , 'id' , 'dni', 'estado' ],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -99,7 +99,7 @@ const verInfoPasajero = async (id) =>{
     try{
         const pasajero = await Usuario.findOne({
       where: {  id : id },
-      attributes: ['id', 'nombre', 'apellido', 'correo', 'telefono', 'dni' ],
+      attributes: ['id', 'nombre', 'apellido', 'correo', 'telefono', 'dni', 'estado' ],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -240,7 +240,7 @@ const viajeDetalleConductor = async (id) =>{
             include: [{
                 model: Usuario,
                 as: 'conductor',
-                attributes: ['nombre', 'correo', 'telefono', 'dni']
+                attributes: ['nombre', 'correo', 'telefono', 'dni' , 'estado', 'apellido']
             }]
         });
        
@@ -262,7 +262,7 @@ const viajeDetalle = async (id) =>{
       where: { viaje_id : id },
             include: [{
                 model: Usuario,
-                attributes: ['nombre', 'correo', 'telefono', 'dni']
+                attributes: ['nombre', 'correo', 'telefono', 'dni',  'estado', 'apellido']
             }]
         });
 
@@ -306,14 +306,16 @@ const cambiarEstadoInactivo = async (id) =>{
                 where: {id: id},
                 
             });
-            cambioEstado.estado = 'aceptado';
+            cambioEstado.estado = 'activo';
             await cambioEstado.save();
             return  cambioEstado;
     }catch(error){
         console.error(`Problemas al actualizar estado`, error);
         throw error;
     }
-}
+};
+
+
 const verEstadoInactivo = async (id) =>{
     try{
             const usuarios = await Usuario.findAll({
@@ -328,11 +330,11 @@ const verEstadoInactivo = async (id) =>{
 }
 
 
-const aceptarConductor = async (id) => await cambiarEstado(id,'Conductor', 'aceptado');
+const aceptarConductor = async (id) => await cambiarEstado(id,'Conductor', 'activo');
 const suspenderConductor = async (id) => await cambiarEstado(id,'Conductor', 'suspender');
 
 const suspenderPasajero = async (id) => await cambiarEstado(id,'Pasajero', 'suspender');
-const aceptarPasajero = async (id) => await cambiarEstado(id,'Pasajero', 'aceptado');
+const aceptarPasajero = async (id) => await cambiarEstado(id,'Pasajero', 'activo');
 
 
 module.exports = {
