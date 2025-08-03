@@ -86,4 +86,17 @@ const getMisViajes = async (req, res) => {
   }
 };
 
-module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible, obtenerViajeActivo, getMisViajes};
+
+
+const obtenerPasajerosDeViaje = async (req, res) => {
+  const { viajeId } = req.params;
+
+  try {
+    const pasajeros = await viajeService.obtenerPasajerosAceptadosDelViaje(viajeId);
+    res.json(pasajeros);
+  } catch (error) {
+    res.status(404).json({ mensaje: error.message });
+  }
+};
+
+module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible, obtenerViajeActivo, getMisViajes, obtenerPasajerosDeViaje };
