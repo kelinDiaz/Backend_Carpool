@@ -2,7 +2,8 @@
 
 const { getMisViajes } = require('../controllers/viaje.controller');
 const { Viaje, Usuario, Vehiculo,Reserva, ViajePasajero  } = require('../models');
-const { Op } = require('sequelize');
+const { Op, fn, col, where } = require('sequelize');
+
 
 
 const obtenerDetalleViajeParaPasajero = async (idViaje) => {
@@ -34,16 +35,24 @@ const obtenerDetalleViajeParaPasajero = async (idViaje) => {
   }
 };
 
-
 const buscarViajesPorDestino = async (termino) => {
   try {
     const viajes = await Viaje.findAll({
       where: {
-        destino: {
-          [Op.like]: `%${termino}%`
-        },
-        estado: 'activo',
-        asientos_disponibles: { [Op.gt]: 0 }
+        [Op.and]: [
+          {
+            [Op.or]: [
+              where(fn('LOWER', col('destino')), {
+                [Op.like]: `%${termino.toLowerCase()}%`
+              }),
+              where(fn('LOWER', col('origen')), {
+                [Op.like]: `%${termino.toLowerCase()}%`
+              })
+            ]
+          },
+          { estado: 'activo' },
+          { asientos_disponibles: { [Op.gt]: 0 } }
+        ]
       },
       attributes: [
         'id',
@@ -57,12 +66,13 @@ const buscarViajesPorDestino = async (termino) => {
       include: [
         {
           model: Usuario,
-          as: 'conductor', // alias definido en las relaciones
+          as: 'conductor',
           attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
         }
       ]
     });
 
+    console.log("Viajes encontrados:", viajes.map(v => v.origen + ' → ' + v.destino));
     return viajes.map(viaje => ({
       id: viaje.id,
       origen: viaje.origen,
@@ -72,16 +82,17 @@ const buscarViajesPorDestino = async (termino) => {
       precio_asiento: viaje.precio_asiento,
       descripcion: viaje.descripcion,
       conductor: {
-        id: viaje.Usuario.id,
-        nombre: `${viaje.Usuario.nombre} ${viaje.Usuario.apellido}`,
-        fotoPerfil: viaje.Usuario.fotoPerfil
+        id: viaje.conductor.id,
+        nombre: `${viaje.conductor.nombre} ${viaje.conductor.apellido}`,
+        fotoPerfil: viaje.conductor.fotoPerfil
       }
     }));
   } catch (error) {
-    console.error('Error al buscar viajes por destino:', error);
+    console.error(' Error al buscar viajes por destino:', error);
     throw error;
   }
 };
+
 
 //Obtiene el viaje en curso del viaje, el viaje que ha sido aceptado
 const obtenerViajeAceptadoPorPasajero = async (pasajeroId) => {
