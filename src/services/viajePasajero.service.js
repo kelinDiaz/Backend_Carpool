@@ -152,9 +152,33 @@ const getMisViajesP = async (pasajeroId) => {
 
 
 
+/*const obtenerEstadoViajePorPasajero = async (pasajeroId) => {
+
+  const viajePasajero = await ViajePasajero.findOne({
+    where: { pasajero_id: pasajeroId },
+    order: [['fecha_reserva', 'DESC']]
+  });
+
+  if (!viajePasajero) return null;
+
+  const viaje = await Viaje.findOne({
+    where: { id: viajePasajero.viaje_id }
+  });
+
+  return viaje;
+};
+
+
+
+
+*/
+
+
+
 module.exports = {
   obtenerDetalleViajeParaPasajero, 
   buscarViajesPorDestino,
   obtenerViajeAceptadoPorPasajero, 
-  getMisViajesP
+  getMisViajesP, 
+  /*obtenerEstadoViajePorPasajero*/
 };

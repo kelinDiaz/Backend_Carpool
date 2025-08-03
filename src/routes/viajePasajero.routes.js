@@ -13,4 +13,7 @@ router.get('/pasajero/:pasajero_id/viaje-aceptado', viajePasajeroController.obte
 
 router.get('/pasajero/finalizados/:pasajero_id', viajePasajeroController.getMisViajesP);
 
+
+/*router.get('/estado/:pasajeroId', viajePasajeroController.obtenerEstadoViaje);*/
+
 module.exports = router;

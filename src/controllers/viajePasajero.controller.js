@@ -77,9 +77,38 @@ const getMisViajesP = async (req, res) => {
 
 
 
+/*const obtenerEstadoViaje = async (req, res) => {
+  const { pasajeroId } = req.params;
+
+  try {
+    const viaje = await viajePasajeroService.obtenerEstadoViajePorPasajero(pasajeroId);
+
+    if (!viaje) {
+      return res.status(200).json({ viaje: null });
+    }
+
+    return res.status(200).json({
+      viaje: {
+        id: viaje.id,
+        estado: viaje.estado,  
+        destino: viaje.destino,
+  
+      }
+    });
+
+  } catch (error) {
+    console.error('Error al obtener estado del viaje:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};*/
+
+
+
+
 module.exports = {
   getViajeDetallePasajero, 
   buscarViajesPorDestino,
   obtenerViajeDePasajero, 
-  getMisViajesP
+  getMisViajesP,
+ /* obtenerEstadoViaje*/
 };
