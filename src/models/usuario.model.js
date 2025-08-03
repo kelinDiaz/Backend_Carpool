@@ -16,7 +16,8 @@ const Usuario = sequelize.define('Usuario', {
   fotoCarnet: { type: DataTypes.STRING(255), allowNull: true },
   role_id: { type: DataTypes.INTEGER, allowNull: false },
   telefono: { type: DataTypes.STRING(20), allowNull: false },
-  campus_id: {type: DataTypes.INTEGER, allowNull:false}
+  campus_id: {type: DataTypes.INTEGER, allowNull:false},
+  estado:{type: DataTypes.STRING(25), allowNull: true, defaultValue: 'pendiente'}
 
 }, {
   tableName: 'usuarios',

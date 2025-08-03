@@ -18,14 +18,18 @@ router.get('/conductores', admiController.VerConductores);
 router.get('/pasajeros', admiController.VerPasajeros);
 router.get('/viajes', admiController.VerHistorialViaje);
 router.get('/reserva', admiController.VerHistorialReserva);
+router.get('/usuariosInactivos', admiController.VerUsuariosInactivos);
 
 router.post('/conductor/:id', admiController.verInfoConductor);
 router.post('/pasajero/:id', admiController.verInfoPasajero);
 router.post('/viajeDetalleConductor/:id', admiController.viajeDetalleConductor);
 router.post('/viajeDetalle/:id', admiController.viajeDetalle);
+router.post('/conductorAceptado/:id', admiController.aceptarConductorController);
+router.post('/usuario/:id', admiController.aceptarUsuarioController);
 
 router.delete('/pasajero/:id', admiController.eliminarPasajero);
-router.delete('/viajes/:id', admiController.eliminarViaje);
+router.delete('/reserva/:id', admiController.eliminarViaje);
+router.delete('/conductor/:id', admiController.eliminarConductor);
 
 
 
