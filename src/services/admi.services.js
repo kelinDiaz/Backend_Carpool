@@ -1,5 +1,5 @@
 const sequelize = require('../config/database');
-
+const { Op } = require('sequelize');
 const Usuario = require('../models/usuario.model');
 const Vehiculo = require('../models/vehiculo.model');
 const Rol = require('../models/rol.model'); 
@@ -11,7 +11,10 @@ const ViajePasajero = require('../models/viaje_pasajero.model');
 const verTodoConductores = async () =>{
     try{
         const conductores = Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'correo','telefono', 'id' , 'dni' ],
+      attributes: ['id' ,'nombre', 'apellido', 'correo','telefono',  'dni' , 'estado'],
+       where : { estado: {
+          [Op.in]: ['activo', 'pendiente', 'suspendido', 'aceptado'] 
+        } },
       include: [{
         model: Rol,
         as: 'Rol',
@@ -34,7 +37,10 @@ const verTodoConductores = async () =>{
 const verTodoPasajeros = async () =>{
     try{
         const pasajeros = Usuario.findAll({
-      attributes: ['nombre', 'apellido', 'correo','telefono' ,'id' , 'dni' ],
+      attributes: ['nombre', 'apellido', 'correo','telefono' ,'id' , 'dni' , 'estado' ],
+      where : { estado: {
+          [Op.in]: ['activo', 'pendiente', 'suspendido', 'aceptado'] 
+        } },
       include: [{
         model: Rol,
         as: 'Rol',
@@ -60,7 +66,7 @@ const verInfoConductor = async (id) =>{
     try{
         const conductor = await Usuario.findOne({
       where: {  id : id },
-      attributes: [ 'nombre', 'apellido', 'correo', 'telefono' , 'id' , 'dni' ],
+      attributes: [ 'nombre', 'apellido', 'correo', 'telefono' , 'id' , 'dni', 'estado' ],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -93,7 +99,7 @@ const verInfoPasajero = async (id) =>{
     try{
         const pasajero = await Usuario.findOne({
       where: {  id : id },
-      attributes: ['id', 'nombre', 'apellido', 'correo', 'telefono', 'dni' ],
+      attributes: ['id', 'nombre', 'apellido', 'correo', 'telefono', 'dni', 'estado' ],
       include: [{
         model: Rol,
         as: 'Rol',
@@ -121,7 +127,8 @@ const verHistorialViajes = async =>{
             attributes: ['id', 'origen', 'destino', 'estado'],
             include: [{
                 model: Usuario,
-                attributes: ['nombre', 'correo', 'telefono', 'id']
+                as: 'conductor',
+                attributes: ['nombre', 'correo', 'telefono', 'id', 'dni']
             }]
         });
 
@@ -162,27 +169,62 @@ const verReserva =  async =>{
 
 const eliminarPasajero = async (id) => {
     try {
-        const pasajero = await db.Pasajero.findByPk(id);
-        if (!pasajero) return null;
+         const pasajero = await Usuario.findOne({
+            where: {id: id},
+            include: [{
+                model: Rol,
+                as: 'Rol',
+                where: { nombre: 'Pasajero' }, 
+                attributes: []
+            }]
+            });
 
-        await pasajero.destroy();
-        return pasajero;
+            pasajero.estado = 'inactivo';
+            await pasajero.save();
+            return pasajero;
+        
+
+       
     } catch (error) {
         console.error('Error al eliminar pasajero:', error);
         throw error;
     }
 };
 
+const eliminarConductor = async (id) => {
+    try {
+         const conductor = await Usuario.findOne({
+            where: {id: id},
+            include: [{
+                model: Rol,
+                as: 'Rol',
+                where: { nombre: 'Conductor' }, 
+                attributes: []
+            }]
+            });
+
+            conductor.estado = 'inactivo';
+            await conductor.save();
+            return conductor;
+        
+
+       
+    } catch (error) {
+        console.error('Error al eliminar conductor:', error);
+        throw error;
+    }
+};
+
 const eliminarViaje = async (id) => {
     try {
-        const viaje = await viaje.findByPk(id); 
+        const reserva = await Reserva.findByPk(id); 
 
-        if (!viaje) {
+        if (!reserva) {
             return null;
         }
 
-        await viaje.destroy();
-        return viaje;
+        await reserva.destroy();
+        return reserva;
 
     } catch (error) {
         console.error('Error al eliminar viaje:', error);
@@ -194,10 +236,11 @@ const viajeDetalleConductor = async (id) =>{
     try{
         const viaje = await Viajes.findOne({
       where: { id: id },
-      attributes: ['id', 'origen', 'destino', 'estado'],
+      attributes: ['id', 'origen', 'destino', 'estado', 'hora_salida','asientos_disponibles','precio_asiento','descripcion'],
             include: [{
                 model: Usuario,
-                attributes: ['nombre', 'correo', 'telefono', 'id']
+                as: 'conductor',
+                attributes: ['nombre', 'correo', 'telefono', 'dni' , 'estado', 'apellido']
             }]
         });
        
@@ -219,12 +262,13 @@ const viajeDetalle = async (id) =>{
       where: { viaje_id : id },
             include: [{
                 model: Usuario,
-                attributes: ['nombre', 'correo', 'telefono', 'dni']
+                attributes: ['nombre', 'correo', 'telefono', 'dni',  'estado', 'apellido']
             }]
         });
+
        
          if(!viaje ||  viaje.length === 0){
-            return response.error(res, 400, 'No se encontro viaje');
+            return null;
         }
        return viaje;
 
@@ -234,6 +278,64 @@ const viajeDetalle = async (id) =>{
 
     };
 };
+
+const cambiarEstado = async (id, tipoUsuario, estado) =>{
+    try{
+            const cambioEstado = await Usuario.findOne({
+                where: {id: id},
+                include: [{
+                    model: Rol,
+                    as: 'Rol',
+                    where: {nombre: tipoUsuario}
+                }]
+            });
+
+            cambioEstado.estado = estado;
+            await cambioEstado.save();
+            return  cambioEstado;
+    }catch(error){
+        console.error(`Problemas al actualizar estado`, error);
+        throw error;
+    }
+}
+
+
+const cambiarEstadoInactivo = async (id) =>{
+    try{
+            const cambioEstado = await Usuario.findOne({
+                where: {id: id},
+                
+            });
+            cambioEstado.estado = 'activo';
+            await cambioEstado.save();
+            return  cambioEstado;
+    }catch(error){
+        console.error(`Problemas al actualizar estado`, error);
+        throw error;
+    }
+};
+
+
+const verEstadoInactivo = async (id) =>{
+    try{
+            const usuarios = await Usuario.findAll({
+                where: {estado: 'inactivo'},
+                attributes: ['id', 'nombre','correo', 'apellido', 'dni']
+            });
+            return  usuarios;
+    }catch(error){
+        console.error(`Problemas al actualizar estado`, error);
+        throw error;
+    }
+}
+
+
+const aceptarConductor = async (id) => await cambiarEstado(id,'Conductor', 'activo');
+const suspenderConductor = async (id) => await cambiarEstado(id,'Conductor', 'suspender');
+
+const suspenderPasajero = async (id) => await cambiarEstado(id,'Pasajero', 'suspender');
+const aceptarPasajero = async (id) => await cambiarEstado(id,'Pasajero', 'activo');
+
 
 module.exports = {
     verTodoConductores,
@@ -245,7 +347,13 @@ module.exports = {
     eliminarPasajero,
     eliminarViaje,
     viajeDetalleConductor,
-    viajeDetalle
-
+    viajeDetalle,
+    eliminarConductor,
+    aceptarConductor,
+    suspenderConductor,
+    suspenderPasajero,
+    aceptarPasajero,
+    cambiarEstadoInactivo ,
+    verEstadoInactivo
 
 }

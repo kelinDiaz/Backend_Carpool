@@ -101,4 +101,40 @@ const obtenerPasajerosDeViaje = async (req, res) => {
 
 
 
-module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible, obtenerViajeActivo, getMisViajes, obtenerPasajerosDeViaje };
+const obtenerPasajerosFinalizados= async (req, res) => {
+  try {
+    const { viajeId } = req.params;
+    const pasajeros = await viajeService.obtenerPasajerosConReservaFinalizada(viajeId);
+    res.json(pasajeros);
+  } catch (error) {
+    console.error('Error al obtener pasajeros con reserva finalizada:', error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+
+
+
+const obtenerConteoDeViajes = async (req, res) => {
+  const { usuarioId } = req.params;
+
+  try {
+    const conteo = await usuarioService.contarViajesPorUsuario(usuarioId);
+    res.json(conteo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al contar los viajes del usuario' });
+  }
+};
+
+
+
+
+
+
+module.exports = { crearViaje , getViaje ,
+   finalizarViaje, listarViajesDisponible, 
+   obtenerViajeActivo, getMisViajes,
+    obtenerPasajerosDeViaje, 
+   obtenerConteoDeViajes, obtenerPasajerosFinalizados };

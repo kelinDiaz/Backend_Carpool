@@ -8,6 +8,7 @@ const { Viaje, Usuario, Reserva,sequelize } = require('../models');
 const Ruta = require('../models/ruta.model'); 
 
 const { Op } = require('sequelize');
+const { obtenerViajeAceptadoPorPasajero } = require('./viajePasajero.service');
 
 
 const crearViaje = async ({
@@ -279,4 +280,69 @@ const obtenerPasajerosAceptadosDelViaje = async (viajeId) => {
 
 
 
-module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles, getViajeActivo, GetMisViajes, obtenerPasajerosAceptadosDelViaje };
+const obtenerPasajerosConReservaFinalizada = async (viajeId) => {
+  const viaje = await Viaje.findOne({
+    where: {
+      id: viajeId,
+      estado: 'finalizado'  // Aseguramos que el viaje esté finalizado
+    }
+  });
+
+  if (!viaje) {
+    throw new Error('Viaje no encontrado');
+  }
+
+  const reservas = await Reserva.findAll({
+    where: {
+      viaje_id: viajeId,
+      estado: 'finalizada'   // Solo reservas finalizadas
+    },
+    include: [{
+      model: Usuario,
+      attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+    }]
+  });
+
+  return reservas.map(r => ({
+    id: r.Usuario.id,
+    nombre: r.Usuario.nombre,
+    apellido: r.Usuario.apellido,
+    fotoPerfil: r.Usuario.fotoPerfil
+  }));
+};
+
+
+
+
+
+
+
+
+const contarViajesPorUsuario = async (usuarioId) => {
+  // Contar como conductor
+  const totalComoConductor = await Viaje.count({
+    where: { conductor_id: usuarioId }
+  });
+
+  // Contar como pasajero (reservas aceptadas)
+  const totalComoPasajero = await Reserva.count({
+    where: {
+      pasajero_id: usuarioId,
+      estado: 'aceptada'
+    }
+  });
+
+  return {
+    viajesComoConductor: totalComoConductor,
+    viajesComoPasajero: totalComoPasajero
+  };
+};
+
+
+
+module.exports = { crearViaje, getViaje,
+   finalizarViaje, 
+   listarViajesDisponibles,
+    getViajeActivo, GetMisViajes, obtenerPasajerosAceptadosDelViaje,
+   contarViajesPorUsuario, obtenerPasajerosConReservaFinalizada
+   };

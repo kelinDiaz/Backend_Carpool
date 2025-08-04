@@ -24,8 +24,8 @@ const VerConductores = async (req, res) =>{
             if (!resultado){
                 return response.error(res, 400, 'No se encontro conductores');
             }
-            
-            return response.success(res, 200, 'Conductores encontrados', resultado);
+           const conductores = Array.isArray(resultado) ? resultado : [resultado];
+            return response.success(res, 200, 'Conductores encontrados', conductores);
 
 
         }catch(error){
@@ -151,6 +151,22 @@ const eliminarPasajero = async (req, res) => {
     }
 };
 
+const eliminarConductor = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const eliminado = await admiService.eliminarConductor(id);
+
+        if (!eliminado) {
+            return response.error(res, 404, 'conductor no encontrado o ya eliminado');
+        }
+
+        return response.success(res, 200, 'conductor eliminado correctamente', eliminado);
+    } catch (error) {
+        return response.error(res, 400, 'Error al eliminar conductor', error);
+    }
+};
+
 const eliminarViaje = async (req, res) => {
     try {
         const { id } = req.params;
@@ -158,12 +174,12 @@ const eliminarViaje = async (req, res) => {
         const eliminado = await admiService.eliminarViaje(id);
 
         if (!eliminado) {
-            return response.error(res, 404, 'Viaje no encontrado o ya eliminado');
+            return response.error(res, 404, 'Reserva no encontrado o ya eliminado');
         }
 
-        return response.success(res, 200, 'Viaje eliminado correctamente', eliminado);
+        return response.success(res, 200, 'Reserva eliminado correctamente', eliminado);
     } catch (error) {
-        return response.error(res, 400, 'Error al eliminar viaje', error);
+        return response.error(res, 400, 'Error al eliminar reserva', error);
     }
 };
 
@@ -210,6 +226,130 @@ const viajeDetalle = async (req,res) =>{
         }
 };
 
+const aceptarConductorController = async (req,res) =>{
+    const { id } = req.params;
+        try{
+            
+            const resultado = await admiService.aceptarConductor(id);
+            
+             if (!resultado){
+                return response.error(res, 400, 'No se cambio de estado', resultado);
+            }
+                
+            
+            return response.success(res, 200, 'conductor aceptado', resultado);
+
+
+        }catch(error){
+               res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+        }
+};
+const suspenderConductorController = async (req,res) =>{
+    const { id } = req.params;
+        try{
+            
+            const resultado = await admiService.suspenderConductor(id);
+            
+             if (!resultado){
+                return response.error(res, 400, 'No se cambio de estado', resultado);
+            }
+                
+            
+            return response.success(res, 200, 'conductor suspendido', resultado);
+
+
+        }catch(error){
+               res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+        }
+};
+const suspenderPasajeroController = async (req,res) =>{
+    const { id } = req.params;
+        try{
+            
+            const resultado = await admiService.suspenderPasajero(id);
+            
+             if (!resultado){
+                return response.error(res, 400, 'No se cambio de estado', resultado);
+            }
+                
+            
+            return response.success(res, 200, 'pasajero suspendido', resultado);
+
+
+        }catch(error){
+               res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+        }
+};
+
+const aceptarPasajeroController = async (req,res) =>{
+    const { id } = req.params;
+        try{
+            
+            const resultado = await admiService.aceptarPasajero(id);
+            
+             if (!resultado){
+                return response.error(res, 400, 'No se cambio de estado', resultado);
+            }
+                
+            
+            return response.success(res, 200, 'pasajero aceptado');
+
+
+        }catch(error){
+               res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+        }
+};
+const aceptarUsuarioController = async (req,res) =>{
+    const { id } = req.params;
+        try{
+            
+            const resultado = await admiService.cambiarEstadoInactivo(id);
+            
+             if (!resultado){
+                return response.error(res, 400, 'No se cambio de estado', resultado);
+            }
+                
+            
+            return response.success(res, 200, 'estado actualizado', resultado);
+
+
+        }catch(error){
+               res.status(500).json({ 
+              message: 'Error en el servidor',
+               error: error.message 
+              });
+        }
+};
+
+const VerUsuariosInactivos = async (req, res) =>{
+        try{
+            const resultado = await admiService.verEstadoInactivo();
+            if (!resultado){
+                return response.error(res, 400, 'No hay usuarios inactivos');
+            }
+            return response.success(res, 200, 'usuarios encontrado', resultado);
+
+
+        }catch(error){
+        return response.error(res, 400, 'Error para ver los pasajero', error);
+
+
+        }
+
+
+};
 
 module.exports ={
 
@@ -222,6 +362,13 @@ module.exports ={
     eliminarPasajero,
     eliminarViaje,
     viajeDetalleConductor,
-    viajeDetalle
+    viajeDetalle,
+    eliminarConductor,
+    aceptarConductorController,
+    suspenderConductorController,
+    suspenderPasajeroController,
+    aceptarPasajeroController,
+    aceptarUsuarioController,
+    VerUsuariosInactivos
 
 }
