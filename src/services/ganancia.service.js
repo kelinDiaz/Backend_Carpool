@@ -40,7 +40,20 @@ const obtenerGananciaPorViaje = async (viajeId) => {
   return ganancia;
 };
 
+const obtenerGananciasPorConductor = async (conductorId) => {
+  const ganancias = await Ganancia.findAll({
+    where: { conductor_id: conductorId },
+    attributes: ['viaje_id', 'pasajeros', 'precio_asiento', 'ganancia_total', 'fecha_registro'],
+    order: [['fecha_registro', 'DESC']]
+  });
+
+  return ganancias;
+};
+
+
+
 module.exports = {
   registrarGananciaPorViaje,
-  obtenerGananciaPorViaje
+  obtenerGananciaPorViaje,
+  obtenerGananciasPorConductor
 };
