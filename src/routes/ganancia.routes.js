@@ -8,4 +8,7 @@ router.post('/:viajeId', controller.crearGanancia);
 
 router.get('/:viajeId', controller.getGananciaPorViaje);
 
+router.get('/conductor/:conductorId', controller.obtenerGananciasPorConductor);
+
+
 module.exports = router;

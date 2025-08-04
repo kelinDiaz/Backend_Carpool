@@ -32,7 +32,8 @@ const roles = require('./routes/rol.router');
 
 const CalificacionRoutes = require('./routes/calificacion.routes'); 
 
-const ganaciasRoutes = require('./routes/ganancia.routes')
+const gananciaRoutes = require('./routes/ganancia.routes');
+
 
 const vehiculoRouter = require('./routes/vehiculo.router');
 
@@ -63,7 +64,7 @@ app.use('/api/roles', roles);
 
 app.use('/api/calificacion', CalificacionRoutes);
 
-app.use('/api/ganancia', ganaciasRoutes);
+app.use('/api/ganancia', gananciaRoutes);
 
 app.use('/api/vehiculo', vehiculoRouter);
 

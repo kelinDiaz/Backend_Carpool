@@ -21,7 +21,20 @@ const getGananciaPorViaje = async (req, res) => {
   }
 };
 
+const obtenerGananciasPorConductor = async (req, res) => {
+  try {
+    const { conductorId } = req.params;
+    const ganancias = await gananciaService.obtenerGananciasPorConductor(conductorId);
+    res.status(200).json(ganancias);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+
+
 module.exports = {
   crearGanancia,
-  getGananciaPorViaje
+  getGananciaPorViaje,
+  obtenerGananciasPorConductor
 };

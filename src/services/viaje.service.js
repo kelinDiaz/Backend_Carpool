@@ -244,5 +244,39 @@ const GetMisViajes = async (conductor_id) => {
 };
 
 
+const obtenerPasajerosAceptadosDelViaje = async (viajeId) => {
 
-module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles, getViajeActivo, GetMisViajes };
+  const viaje = await Viaje.findOne({
+    where: {
+      id: viajeId,
+      estado: 'activo'
+    }
+  });
+
+  if (!viaje) {
+    throw new Error('Viaje no encontrado o no está activo');
+  }
+
+ 
+  const reservas = await Reserva.findAll({
+    where: {
+      viaje_id: viajeId,
+      estado: 'aceptada'
+    },
+    include: [{
+      model: Usuario,
+      attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+    }]
+  });
+
+  return reservas.map(r => ({
+    id: r.Usuario.id,
+    nombre: r.Usuario.nombre,
+    apellido: r.Usuario.apellido,
+    fotoPerfil: r.Usuario.fotoPerfil
+  }));
+};
+
+
+
+module.exports = { crearViaje, getViaje, finalizarViaje, listarViajesDisponibles, getViajeActivo, GetMisViajes, obtenerPasajerosAceptadosDelViaje };

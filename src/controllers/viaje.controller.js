@@ -99,4 +99,6 @@ const obtenerPasajerosDeViaje = async (req, res) => {
   }
 };
 
+
+
 module.exports = { crearViaje , getViaje , finalizarViaje, listarViajesDisponible, obtenerViajeActivo, getMisViajes, obtenerPasajerosDeViaje };
