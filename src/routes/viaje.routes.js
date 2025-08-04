@@ -23,4 +23,11 @@ router.get('/conductor/finalizados/:conductor_id/', viajeController.getMisViajes
 router.get('/pasajeros/:viajeId', viajeController.obtenerPasajerosDeViaje);
 
 
+router.get('/pasajeros-finalizados/:viajeId', viajeController.obtenerPasajerosFinalizados);
+
+
+router.get('/conteo/:usuarioId', viajeController.obtenerConteoDeViajes);
+
+
+
 module.exports = router;
