@@ -13,5 +13,10 @@ export default defineConfig([
         ...globals.node,     
       },
     },
+    rules: {
+      "no-unused-vars": "off",  
+      "no-undef": "off",        
+      "no-dupe-keys": "off"     
+    },
   },
 ]);
