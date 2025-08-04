@@ -35,9 +35,24 @@ const obtenerRutaPorUsuarioId = async (req, res) => {
 };
 
 
+const editarRuta = async (req, res) => {
+  const { rutaId } = req.params;
+  const nuevaRuta = req.body;
+
+  try {
+    const rutaActualizada = await rutaService.editarRuta(rutaId, nuevaRuta);
+    res.json(rutaActualizada);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ mensaje: error.message });
+  }
+};
+
+
 
 
 module.exports = {
   crearRuta,
-  obtenerRutaPorUsuarioId
+  obtenerRutaPorUsuarioId, 
+  editarRuta
 };

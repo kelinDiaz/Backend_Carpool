@@ -113,7 +113,8 @@ const obtenerViajeAceptadoPorPasajero = async (pasajeroId) => {
       'hora_salida',
       'asientos_disponibles',
       'precio_asiento',
-      'descripcion'
+      'descripcion', 
+       'estado'
       
     ],
     include: [
@@ -184,12 +185,80 @@ const getMisViajesP = async (pasajeroId) => {
 
 */
 
+const obtenerConductorPorViaje = async (viajeId) => {
+
+  const viaje = await Viaje.findOne({
+    where: { id: viajeId },
+    include: [
+      {
+        model: Usuario,
+        as: 'conductor', 
+        attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+      }
+    ]
+    
+  });
+
+  console.log('Resultado del findOne:', JSON.stringify(viaje, null, 2));
+
+  if (!viaje || !viaje.conductor) {
+    throw new Error('No se encontró el conductor para este viaje');
+  }
+
+  return viaje.conductor;
+};
+
+
+
+const obtenerUltimoViajeFinalizado = async (pasajeroId) => {
+  try {
+    
+    const ultimoViaje = await ViajePasajero.findOne({
+      where: {
+        pasajero_id: pasajeroId,
+      },
+      include: [
+        {
+          model: Viaje,
+          where: {
+            estado: 'finalizado', 
+          },
+          order: [['id', 'DESC']],  
+          include: [
+            {
+              model: Usuario,
+              as: 'conductor',  
+              attributes: ['nombre', 'apellido', 'fotoPerfil'], 
+            }
+          ]
+        },
+      ],
+      order: [['fecha_reserva', 'DESC']], 
+    });
+    if (!ultimoViaje) {
+      return null;
+    }
+
+  
+    const viajeConductor = {
+      viaje: ultimoViaje.Viaje,
+      conductor: ultimoViaje.Viaje.conductor,  
+    };
+
+    return viajeConductor;  
+  } catch (error) {
+    console.error('Error al obtener el último viaje finalizado:', error);
+    throw error;  
+  }
+};
+
 
 
 module.exports = {
   obtenerDetalleViajeParaPasajero, 
   buscarViajesPorDestino,
   obtenerViajeAceptadoPorPasajero, 
-  getMisViajesP, 
+  getMisViajesP, obtenerConductorPorViaje,
+  obtenerUltimoViajeFinalizado
   /*obtenerEstadoViajePorPasajero*/
 };

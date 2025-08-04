@@ -47,7 +47,35 @@ const obtenerRutaPorUsuarioId = async (usuario_id) => {
 };
 
 
+
+
+
+
+const editarRuta = async (rutaId, nuevaRuta) => {
+  const ruta = await Ruta.findByPk(rutaId);
+  
+  if (!ruta) {
+    throw new Error('Ruta no encontrada');
+  }
+
+
+  nuevaRuta.fecha_ultima_ubicacion = new Date();
+  await ruta.update({
+    direccion_casa: nuevaRuta.direccion_casa,
+    latitud_casa: nuevaRuta.latitud_casa,
+    longitud_casa: nuevaRuta.longitud_casa,
+    direccion_campus: nuevaRuta.direccion_campus,
+    latitud_campus: nuevaRuta.latitud_campus,
+    longitud_campus: nuevaRuta.longitud_campus,
+   
+    solicitud_cambio_ruta: nuevaRuta.solicitud_cambio_ruta
+  });
+
+  return ruta;
+};
+
 module.exports = {
   crearRuta,
-  obtenerRutaPorUsuarioId
+  obtenerRutaPorUsuarioId, 
+  editarRuta
 };

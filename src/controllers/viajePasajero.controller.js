@@ -101,7 +101,40 @@ const getMisViajesP = async (req, res) => {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
 };*/
+const obtenerConductorPorViaje = async (req, res) => {
+  try {
+    const { viajeId } = req.params;
+    const conductor = await viajePasajeroService.obtenerConductorPorViaje(viajeId);
+    res.json(conductor);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
 
+
+
+
+
+async function getViajeFinalizado(req, res) {
+  const pasajeroId = req.params.pasajero_id;  
+
+  try {
+
+    const viajeFinalizado = await viajePasajeroService.obtenerUltimoViajeFinalizado(pasajeroId);
+
+    if (!viajeFinalizado) {
+      return res.status(404).json({ mensaje: 'No tienes un viaje finalizado actualmente' });
+    }
+
+    return res.json({
+      viaje: viajeFinalizado.viaje,  // Enviamos el viaje
+      conductor: viajeFinalizado.conductor,  // Enviamos los detalles del conductor
+    });
+  } catch (error) {
+    console.error('Error en getViajeFinalizado:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+}
 
 
 
@@ -110,5 +143,7 @@ module.exports = {
   buscarViajesPorDestino,
   obtenerViajeDePasajero, 
   getMisViajesP,
+  obtenerConductorPorViaje, 
+  getViajeFinalizado
  /* obtenerEstadoViaje*/
 };

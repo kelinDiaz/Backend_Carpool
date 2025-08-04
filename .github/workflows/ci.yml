@@ -1,0 +1,34 @@
+name: Continuous Integration (CI)
+
+# Este trigger hará que el pipeline se ejecute solo cuando haya un push a la rama `master`
+on:
+  push:
+    branches:
+      - master  # Aquí se debe especificar tu rama por defecto
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Esto define el sistema operativo donde se ejecutará el pipeline
+
+    steps:
+      # Paso 1: Hacer checkout del código del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Paso 2: Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'  # Cambia la versión de Node.js según lo que necesites
+
+      # Paso 3: Instalar las dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # Paso 4: Ejecutar las pruebas
+      - name: Run tests
+        run: npm test
+
+      # Paso 5: Ejecutar linting para verificar la calidad del código
+      - name: Lint code
+        run: npm run lint
