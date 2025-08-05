@@ -62,9 +62,37 @@ const obtenerCalificacionPorId = async (id) => {
 };
 
 
+
+
+const verificarCalificacion = async (viajeId, calificadorId, calificadoId, tipo) => {
+  try {
+
+    const calificacion = await Calificacion.findOne({
+      where: {
+        viaje_id: viajeId,
+        calificador_id: calificadorId,
+        calificado_id: calificadoId,
+        tipo: tipo
+      }
+    });
+
+    
+    if (calificacion) {
+      return { existe: true, calificado: true };
+    }
+
+    return { existe: false, calificado: false };
+  } catch (error) {
+    console.error("Error al verificar la calificación:", error);
+    throw new Error('Error al verificar la calificación');
+  }
+};
+
+
 module.exports = {
   crearCalificacion,
   obtenerCalificacionesRecibidas,
   obtenerPromedioUsuario, 
-  obtenerCalificacionPorId
+  obtenerCalificacionPorId,
+  verificarCalificacion
 };

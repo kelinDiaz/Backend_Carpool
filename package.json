@@ -4,8 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint \"src/**/*.js\" --fix"
+    "lint": "eslint . --fix"
+    
   },
+
+ 
+
   "keywords": [],
   "author": "",
   "license": "ISC",

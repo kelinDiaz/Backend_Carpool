@@ -72,10 +72,34 @@ const obtenerCalificacionPorId = async (req, res) => {
   }
 };
 
+
+
+
+const verificarCalificacion= async (req, res) => {
+  const { viajeId, calificadorId, calificadoId, tipo } = req.params;  
+
+  try {
+    const resultado = await calificacionService.verificarCalificacion(viajeId, calificadorId, calificadoId, tipo);
+
+  
+    if (resultado.existe) {
+      return res.status(200).json({ mensaje: 'Ya has calificado a este usuario', calificado: resultado.calificado });
+    }
+
+    
+    return res.status(200).json({ mensaje: 'No has calificado a este usuario', calificado: resultado.calificado });
+  } catch (error) {
+    console.error("Error al verificar calificación:", error);
+    return res.status(500).json({ error: 'Error al verificar la calificación' });
+  }
+};
+
+
 module.exports = {
   calificarConductor,
   calificarPasajero,
   verCalificacionesRecibidas,
   verPromedioUsuario, 
-  obtenerCalificacionPorId
+  obtenerCalificacionPorId,
+  verificarCalificacion
 };

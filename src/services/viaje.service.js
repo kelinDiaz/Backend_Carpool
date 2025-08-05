@@ -266,7 +266,7 @@ const obtenerPasajerosAceptadosDelViaje = async (viajeId) => {
     },
     include: [{
       model: Usuario,
-      attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+      attributes: ['id', 'nombre', 'apellido', 'fotoPerfil', 'telefono']
     }]
   });
 
@@ -274,7 +274,8 @@ const obtenerPasajerosAceptadosDelViaje = async (viajeId) => {
     id: r.Usuario.id,
     nombre: r.Usuario.nombre,
     apellido: r.Usuario.apellido,
-    fotoPerfil: r.Usuario.fotoPerfil
+    fotoPerfil: r.Usuario.fotoPerfil,
+    telefono: r.Usuario.telefono
   }));
 };
 
@@ -299,7 +300,7 @@ const obtenerPasajerosConReservaFinalizada = async (viajeId) => {
     },
     include: [{
       model: Usuario,
-      attributes: ['id', 'nombre', 'apellido', 'fotoPerfil']
+      attributes: ['id', 'nombre', 'apellido', 'fotoPerfil', 'telefono']
     }]
   });
 
@@ -307,7 +308,8 @@ const obtenerPasajerosConReservaFinalizada = async (viajeId) => {
     id: r.Usuario.id,
     nombre: r.Usuario.nombre,
     apellido: r.Usuario.apellido,
-    fotoPerfil: r.Usuario.fotoPerfil
+    fotoPerfil: r.Usuario.fotoPerfil,
+    telefono: r.Usuario.telefono
   }));
 };
 

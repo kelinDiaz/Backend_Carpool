@@ -19,6 +19,7 @@ router.get('/usuario/:usuarioId/:tipo/promedio', controller.verPromedioUsuario);
 //Obtener Calificacion por id de la calificacion
 router.get('/:id', controller.obtenerCalificacionPorId);
 
+router.get('/verificar/:viajeId/:calificadorId/:calificadoId/:tipo', controller.verificarCalificacion);
 
 module.exports = router;
 
